@@ -13,6 +13,15 @@ Application de bureau hors ligne pour composer une recette de savon par saponifi
 
 > **Sécurité :** la soude caustique est corrosive. La Saponnerie est une aide au calcul, pas une garantie de sécurité ni un substitut à une formation. Les données SAP peuvent varier selon la matière première et leur provenance doit toujours être vérifiée.
 
+## Télécharger
+
+Version publique actuelle : **[La Saponnerie v0.1.0](https://github.com/guillaumeboileaupro/saponerie/releases/tag/v0.1.0)**.
+
+- [Windows — télécharger l'installateur `.exe`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.0/La-Saponnerie_0.1.0_x64-setup.exe)
+- [Ubuntu/Debian — télécharger le paquet `.deb`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.0/La-Saponnerie_0.1.0_amd64.deb)
+
+L'installateur Windows n'est pas encore signé numériquement. Windows SmartScreen peut afficher un avertissement : vérifier que le fichier provient bien de la page officielle de la release avant de l'exécuter. Le `.exe` a été construit par la CI sur Windows, mais doit encore être testé manuellement sur une machine Windows.
+
 ## État
 
 Le socle applicatif est fonctionnel. La pile validée est **Tauri 2 + React + TypeScript**, avec un moteur métier pur écrit en **Rust** et des calculs décimaux fondés sur `rust_decimal`.
@@ -28,7 +37,7 @@ Fonctionnalités disponibles :
 - interface responsive et utilisable au clavier ;
 - génération automatisée d’un paquet Ubuntu/Debian `.deb` et d’un installateur Windows NSIS `.exe`.
 
-Le projet n’est pas encore prêt pour une diffusion générale. La provenance SAP doit être complétée, les avertissements de sécurité doivent recevoir une relecture humaine qualifiée, les permissions Tauri et la CSP doivent être durcies, et l’installateur Windows doit être testé manuellement. Le suivi détaillé est dans [TODO.md](TODO.md).
+La version `v0.1.0` est publiée et téléchargeable. Elle reste une première version à évaluer : la provenance SAP doit être complétée, les avertissements de sécurité doivent recevoir une relecture humaine qualifiée, les permissions Tauri et la CSP doivent être durcies, et l'installateur Windows doit être testé manuellement. Le suivi détaillé est dans [TODO.md](TODO.md).
 
 ## Architecture
 
