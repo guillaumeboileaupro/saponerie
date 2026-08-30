@@ -466,3 +466,55 @@ fn stabilite_des_arrondis_sans_derive_binaire() {
     let result = calculate(&input).unwrap();
     assert_dec_eq(result.theoretical_naoh_grams, "0.3");
 }
+
+// --- Contrat de sérialisation JSON (frontière avec l'UI TypeScript) ---
+//
+// Ces tests figent la forme JSON attendue par src/ (voir docs/decisions/
+// 0002-langage-moteur-decimal.md : le moteur reste indépendant de l'UI,
+// mais son contrat de sérialisation est un détail public qu'un changement
+// de dépendance (ex. mise à jour de rust_decimal ou de serde) pourrait
+// casser silencieusement côté TypeScript sans ce test.
+
+#[test]
+fn contrat_json_water_mode() {
+    let value = WaterMode::PercentOfOils(dec("35"));
+    let json = serde_json::to_value(value).unwrap();
+    assert_eq!(
+        json,
+        serde_json::json!({ "mode": "percentOfOils", "value": "35" })
+    );
+}
+
+#[test]
+fn contrat_json_validation_error_avec_champ() {
+    let error = ValidationError::NonPositiveMass {
+        fat_id: "olive".to_string(),
+    };
+    let json = serde_json::to_value(error).unwrap();
+    assert_eq!(
+        json,
+        serde_json::json!({ "type": "nonPositiveMass", "details": { "fatId": "olive" } })
+    );
+}
+
+#[test]
+fn contrat_json_calculation_result() {
+    let input = RecipeInput {
+        ingredients: vec![ingredient("olive", "0.134", "100")],
+        superfat_percent: dec("0"),
+        lye_purity_percent: dec("100"),
+        water_mode: WaterMode::PercentOfOils(dec("35")),
+    };
+    let result = calculate(&input).unwrap();
+    let json = serde_json::to_value(&result).unwrap();
+
+    assert_eq!(json["totalFatGrams"], "100");
+    // rust_decimal conserve l'échelle du calcul (0,134 a 3 décimales, donc
+    // 100 × 0,134 = "13.400", pas "13.4"). C'est voulu : l'arrondi/l'affichage
+    // appartient à la couche UI (§4.5 de docs/PROJECT_CONTEXT.md), jamais au
+    // moteur. Ce test fige ce comportement pour que la couche TS ne suppose
+    // jamais qu'une chaîne décimale est déjà normalisée.
+    assert_eq!(json["theoreticalNaohGrams"], "13.400");
+    assert_eq!(json["ingredientBreakdown"][0]["fatId"], "olive");
+    assert_eq!(json["ingredientBreakdown"][0]["percentOfOils"], "100");
+}

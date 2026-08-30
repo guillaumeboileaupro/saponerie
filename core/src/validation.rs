@@ -1,4 +1,5 @@
 use rust_decimal::Decimal;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{RecipeInput, WaterMode};
 
@@ -49,11 +50,18 @@ pub mod bounds {
 
 /// Erreur bloquante : la recette n'est pas exploitable tant qu'elle n'est
 /// pas corrigée. Aucun résultat ne doit être affiché comme utilisable.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "type", content = "details", rename_all = "camelCase")]
 pub enum ValidationError {
     EmptyRecipe,
-    NonPositiveMass { fat_id: String },
-    MissingOrNonPositiveSapNaOH { fat_id: String },
+    #[serde(rename_all = "camelCase")]
+    NonPositiveMass {
+        fat_id: String,
+    },
+    #[serde(rename = "missingOrNonPositiveSapNaOh", rename_all = "camelCase")]
+    MissingOrNonPositiveSapNaOH {
+        fat_id: String,
+    },
     SuperfatOutOfRange(Decimal),
     LyePurityOutOfRange(Decimal),
     ConcentrationOutOfRange(Decimal),

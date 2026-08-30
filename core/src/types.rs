@@ -1,11 +1,13 @@
 use rust_decimal::Decimal;
+use serde::{Deserialize, Serialize};
 
 /// Corps gras utilisé dans une recette, avec son indice SAP NaOH.
 ///
 /// `sap_koh`, quand présent, est conservé pour un futur module savon liquide
 /// mais n'est jamais lu par [`crate::calculate`] : NaOH et KOH ne doivent
 /// jamais être confondus dans le moteur de calcul actuel.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Fat {
     pub id: String,
     pub display_name: String,
@@ -14,7 +16,8 @@ pub struct Fat {
 }
 
 /// Un corps gras et sa masse dans une recette donnée.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RecipeIngredient {
     pub fat: Fat,
     pub mass_grams: Decimal,
@@ -22,7 +25,8 @@ pub struct RecipeIngredient {
 
 /// Méthode de calcul de l'eau. Les trois méthodes ne doivent jamais être
 /// mélangées : une recette en choisit une seule, explicitement.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "mode", content = "value", rename_all = "camelCase")]
 pub enum WaterMode {
     /// Concentration `c` de la solution de soude, `0 < c < 1`.
     Concentration(Decimal),
@@ -32,7 +36,8 @@ pub enum WaterMode {
     PercentOfOils(Decimal),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RecipeInput {
     pub ingredients: Vec<RecipeIngredient>,
     /// Surgras en pourcentage, ex. `5` pour 5 %.
@@ -42,14 +47,16 @@ pub struct RecipeInput {
     pub water_mode: WaterMode,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct IngredientShare {
     pub fat_id: String,
     pub mass_grams: Decimal,
     pub percent_of_oils: Decimal,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CalculationResult {
     pub total_fat_grams: Decimal,
     pub theoretical_naoh_grams: Decimal,

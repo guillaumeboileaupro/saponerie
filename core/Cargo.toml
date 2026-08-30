@@ -5,4 +5,8 @@ edition = "2021"
 description = "Moteur de calcul pur de La Saponnerie (NaOH, surgras, pureté, eau)."
 
 [dependencies]
-rust_decimal = "1"
+rust_decimal = { version = "1", features = ["serde-str"] }
+serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+serde_json = "1"
