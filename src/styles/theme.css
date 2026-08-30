@@ -1,0 +1,139 @@
+/* Jetons de design de La Saponnerie : identité d'atelier de savonnerie —
+   sobre, chaleureuse, lisible. Couleur principale reprise du logo validé
+   (assets/logo/logo.svg, bleu #174A70). Mode sombre volontairement hors
+   périmètre du premier jalon (§7 de docs/PROJECT_CONTEXT.md). */
+:root {
+  --color-primary: #174a70;
+  --color-primary-hover: #123a59;
+  --color-primary-soft: #e5edf3;
+  --color-bg: #faf6f0;
+  --color-surface: #ffffff;
+  --color-border: #e2d9cb;
+  --color-text: #241f1a;
+  --color-text-muted: #6b6259;
+  --color-danger: #9a2f24;
+  --color-danger-bg: #fbeae7;
+  --color-warning: #7a5300;
+  --color-warning-bg: #fdf1da;
+
+  --radius-md: 10px;
+  --radius-sm: 6px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+table {
+  font-variant-numeric: tabular-nums;
+}
+
+input,
+button,
+select {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+input[type="text"] {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+input[type="text"]:disabled {
+  background-color: var(--color-bg);
+  color: var(--color-text-muted);
+}
+
+button {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--color-primary);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Focus visible et net partout : ne jamais supprimer l'anneau de focus
+   (voir la consigne accessibilité du skill frontend-design). */
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.badge {
+  display: inline-block;
+  margin-left: var(--space-2);
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-warning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.danger-text {
+  color: var(--color-danger);
+}

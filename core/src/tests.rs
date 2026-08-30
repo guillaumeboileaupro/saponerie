@@ -476,6 +476,26 @@ fn stabilite_des_arrondis_sans_derive_binaire() {
 // casser silencieusement côté TypeScript sans ce test.
 
 #[test]
+fn contrat_json_fat_conserve_la_casse_naoh_koh() {
+    let value = Fat {
+        id: "olive".to_string(),
+        display_name: "Olive".to_string(),
+        sap_na_oh: dec("0.134"),
+        sap_koh: Some(dec("0.19")),
+    };
+    let json = serde_json::to_value(value).unwrap();
+    assert_eq!(
+        json,
+        serde_json::json!({
+            "id": "olive",
+            "displayName": "Olive",
+            "sapNaOH": "0.134",
+            "sapKOH": "0.19",
+        })
+    );
+}
+
+#[test]
 fn contrat_json_water_mode() {
     let value = WaterMode::PercentOfOils(dec("35"));
     let json = serde_json::to_value(value).unwrap();

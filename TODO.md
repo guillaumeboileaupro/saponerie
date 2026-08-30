@@ -22,13 +22,13 @@
 
 ## P2 — Application
 
-- [x] Initialiser Tauri — squelette Tauri 2 + React + TS créé, commande `calculer_recette` reliée à `core/`, build et lancement vérifiés (`npm run build`, `cargo tauri dev` sous Xvfb). Icônes par défaut de Tauri encore en place : à remplacer par des tailles générées depuis `assets/logo/logo.svg` avant packaging. Écran actuel (`src/App.tsx`) est une démo technique, pas l'éditeur de recette.
-- [ ] Créer l’éditeur de recette.
-- [ ] Créer le sélecteur d’ingrédients.
-- [ ] Afficher résultats et hypothèses.
+- [x] Initialiser Tauri — squelette Tauri 2 + React + TS créé, commande `calculer_recette` reliée à `core/`, build et lancement vérifiés (`npm run build`, `cargo tauri dev` sous Xvfb). Icônes par défaut de Tauri encore en place : à remplacer par des tailles générées depuis `assets/logo/logo.svg` avant packaging.
+- [x] Créer l'éditeur de recette — `src/features/recipe/RecipeEditor.tsx`, mise en page deux colonnes (recette / résultats) responsive dès 360 px, valeurs initiales explicites (surgras 5 %, pureté 99 %, eau 35 % des corps gras).
+- [x] Créer le sélecteur d'ingrédients — `FatPicker.tsx`, recherche par nom/alias sur `data/fats.2026-08-30.json`, badge « non vérifié » pour les indices `documentary`.
+- [x] Afficher résultats et hypothèses — `ResultsPanel.tsx` : résultats arrondis à l'affichage seulement (`formatDecimal.ts`), avertissements hors plage usuelle, hypothèses dépliables, états vide/erreur/chargement.
 - [ ] Sauvegarder et dupliquer localement.
 - [ ] Ajouter impression ou export PDF.
-- [ ] Ajouter accessibilité clavier et contraste AA.
+- [x] Accessibilité clavier et contraste AA — focus visible partout (`:focus-visible`), libellés associés à chaque champ, cibles de contrôle en boutons natifs ; vérifié en pilotant l'app réelle (Tauri sous Xvfb + xdotool) et en contrôlant l'absence de débordement horizontal à 360/768/1280 px (Playwright). Contraste chiffré (ratios WCAG) non mesuré formellement — à auditer avec le skill `security-best-practices`/un outil dédié avant publication.
 
 ## P3 — Distribution
 

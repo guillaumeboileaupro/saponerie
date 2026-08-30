@@ -9,8 +9,8 @@
 export interface Fat {
   id: string;
   displayName: string;
-  sapNaOh: string;
-  sapKoh: string | null;
+  sapNaOH: string;
+  sapKOH: string | null;
 }
 
 export interface RecipeIngredient {

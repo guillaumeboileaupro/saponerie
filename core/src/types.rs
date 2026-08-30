@@ -11,7 +11,12 @@ use serde::{Deserialize, Serialize};
 pub struct Fat {
     pub id: String,
     pub display_name: String,
+    /// Renommé explicitement pour conserver la casse chimique NaOH (au lieu
+    /// du "sapNaOh" que produirait la conversion camelCase automatique), et
+    /// matcher les clés de `data/fats.*.json` (voir ADR 0003).
+    #[serde(rename = "sapNaOH")]
     pub sap_na_oh: Decimal,
+    #[serde(rename = "sapKOH")]
     pub sap_koh: Option<Decimal>,
 }
 
