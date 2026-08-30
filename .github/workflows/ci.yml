@@ -101,16 +101,25 @@ jobs:
 
       - run: npm ci
 
-      - name: Build Tauri (bundles définis dans tauri.conf.json)
+      # ADR 0005 : uniquement .deb sur Linux et NSIS sur Windows. Sans
+      # --bundles explicite, tauri-action construit tous les formats
+      # disponibles sur la plateforme (appimage/rpm en plus du deb,
+      # msi en plus du nsis), en ignorant la restriction "targets" de
+      # tauri.conf.json.
+      - name: Build Tauri (.deb sur Linux, NSIS sur Windows — ADR 0005)
         uses: tauri-apps/tauri-action@v0
+        with:
+          args: --bundles ${{ matrix.platform == 'linux' && 'deb' || 'nsis' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Le workspace Cargo a sa racine au niveau du dépôt : le dossier
+      # cible est <racine>/target, pas src-tauri/target.
       - name: Publier les artefacts
         uses: actions/upload-artifact@v4
         with:
           name: la-saponnerie-${{ matrix.platform }}
           path: |
-            src-tauri/target/release/bundle/deb/*.deb
-            src-tauri/target/release/bundle/nsis/*.exe
-          if-no-files-found: ignore
+            target/release/bundle/deb/*.deb
+            target/release/bundle/nsis/*.exe
+          if-no-files-found: error
