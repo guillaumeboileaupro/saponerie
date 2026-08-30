@@ -32,11 +32,11 @@
 
 ## P3 — Distribution
 
-- [ ] CI Linux et Windows.
-- [ ] Générer et tester le `.deb`.
-- [ ] Générer et tester le `.exe`.
-- [ ] Documenter installation et désinstallation.
-- [ ] Choisir licence et politique de publication.
+- [x] CI Linux et Windows — `.github/workflows/ci.yml` : job `quality` (fmt, clippy, tests Rust, build TS) puis job `build` en matrice Linux/Windows via `tauri-apps/tauri-action`. Validé avec `actionlint`.
+- [x] Générer et tester le `.deb` — build release, icônes régénérées depuis `assets/logo/logo.svg`, `dpkg -i` puis lancement réel de l'app installée (retrouve la base SQLite existante), puis `dpkg --purge` : cycle complet vérifié sur cette machine.
+- [ ] Générer et tester le `.exe` — build automatisé par la CI (runner Windows réel), **non testé manuellement sur une machine Windows** (impossible depuis Linux, voir skill `tauri-desktop`).
+- [x] Documenter installation et désinstallation — `docs/INSTALLATION.md`.
+- [ ] Choisir licence et politique de publication — décision à prendre par Guillaume.
 
 ## Plus tard
 
