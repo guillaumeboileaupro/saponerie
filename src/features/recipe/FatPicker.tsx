@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
-import { isUnverified, searchFatsCatalog } from "./fatsCatalog";
+import { CustomFatForm } from "./CustomFatForm";
+import { filterFatsCatalog, isUnverified, useFatsCatalog, type FatCatalogEntry } from "./fatsCatalog";
 
 interface FatPickerProps {
   onSelect: (catalogId: string) => void;
@@ -7,8 +8,16 @@ interface FatPickerProps {
 
 export function FatPicker({ onSelect }: FatPickerProps) {
   const [query, setQuery] = useState("");
+  const [showCustomForm, setShowCustomForm] = useState(false);
   const listId = useId();
-  const matches = searchFatsCatalog(query);
+  const catalog = useFatsCatalog();
+  const matches = filterFatsCatalog(catalog, query);
+
+  function handleCreated(entry: FatCatalogEntry) {
+    onSelect(entry.fat.id);
+    setShowCustomForm(false);
+    setQuery("");
+  }
 
   return (
     <div className="fat-picker">
@@ -45,6 +54,14 @@ export function FatPicker({ onSelect }: FatPickerProps) {
           </li>
         ))}
       </ul>
+
+      {showCustomForm ? (
+        <CustomFatForm onCreated={handleCreated} onCancel={() => setShowCustomForm(false)} />
+      ) : (
+        <button type="button" className="link-button" onClick={() => setShowCustomForm(true)}>
+          + Créer un ingrédient personnalisé
+        </button>
+      )}
     </div>
   );
 }

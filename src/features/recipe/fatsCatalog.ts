@@ -1,4 +1,6 @@
+import { useSyncExternalStore } from "react";
 import dataset from "../../../data/fats.2026-08-30.json";
+import { loadUserFats, saveUserFats, type UserFatDefinition } from "./userFatsStorage";
 import type { Fat } from "../../core/types";
 
 /**
@@ -36,7 +38,7 @@ const raw = dataset as RawDataset;
 
 export const fatsDatasetVersion = raw.version;
 
-export const fatsCatalog: FatCatalogEntry[] = raw.fats.map((entry) => ({
+const baseCatalog: FatCatalogEntry[] = raw.fats.map((entry) => ({
   fat: {
     id: entry.id,
     displayName: entry.displayName,
@@ -48,6 +50,64 @@ export const fatsCatalog: FatCatalogEntry[] = raw.fats.map((entry) => ({
   status: entry.status as SapStatus,
 }));
 
+function userFatToEntry(definition: UserFatDefinition): FatCatalogEntry {
+  return {
+    fat: {
+      id: definition.id,
+      displayName: definition.displayName,
+      sapNaOH: definition.sapNaOH,
+      sapKOH: definition.sapKOH,
+    },
+    aliases: [],
+    source: "utilisateur",
+    status: "user_defined",
+  };
+}
+
+let userFats: UserFatDefinition[] = loadUserFats();
+let catalog: FatCatalogEntry[] = [...baseCatalog, ...userFats.map(userFatToEntry)];
+const listeners = new Set<() => void>();
+
+function notifyListeners(): void {
+  for (const listener of listeners) listener();
+}
+
+/** Lecture non réactive, pour du code hors composants React (ex. state.ts). */
+export function getFatsCatalog(): FatCatalogEntry[] {
+  return catalog;
+}
+
+/**
+ * Ajoute un ingrédient personnalisé (§5 de docs/PROJECT_CONTEXT.md : un
+ * utilisateur avancé peut créer un ingrédient, mais l'indice n'est jamais
+ * présenté comme vérifié). Renvoie l'entrée créée pour l'ajouter aussitôt
+ * à la recette en cours d'édition.
+ */
+export function addUserFat(displayName: string, sapNaOH: string, sapKOH: string | null): FatCatalogEntry {
+  const definition: UserFatDefinition = {
+    id: `custom-${crypto.randomUUID()}`,
+    displayName,
+    sapNaOH,
+    sapKOH,
+  };
+  userFats = [...userFats, definition];
+  saveUserFats(userFats);
+  catalog = [...baseCatalog, ...userFats.map(userFatToEntry)];
+  notifyListeners();
+  return userFatToEntry(definition);
+}
+
+/** Catalogue réactif : se met à jour quand un ingrédient personnalisé est ajouté. */
+export function useFatsCatalog(): FatCatalogEntry[] {
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      listeners.add(onStoreChange);
+      return () => listeners.delete(onStoreChange);
+    },
+    getFatsCatalog,
+  );
+}
+
 function normalize(text: string): string {
   return text
     .normalize("NFD")
@@ -55,12 +115,12 @@ function normalize(text: string): string {
     .toLowerCase();
 }
 
-export function searchFatsCatalog(query: string): FatCatalogEntry[] {
+export function filterFatsCatalog(entries: FatCatalogEntry[], query: string): FatCatalogEntry[] {
   const needle = normalize(query.trim());
   if (needle === "") {
-    return fatsCatalog;
+    return entries;
   }
-  return fatsCatalog.filter((entry) => {
+  return entries.filter((entry) => {
     const haystacks = [entry.fat.displayName, ...entry.aliases];
     return haystacks.some((text) => normalize(text).includes(needle));
   });

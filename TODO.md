@@ -40,8 +40,8 @@
 
 ## Plus tard
 
-- [ ] Ingrédients personnalisés.
-- [ ] Import/export JSON.
-- [ ] Additifs, argiles et exfoliants.
-- [ ] Module KOH séparé.
-- [ ] Profils d’acides gras avec sources vérifiées.
+- [x] Ingrédients personnalisés — formulaire `CustomFatForm.tsx`, persistés dans le stockage local du navigateur (`userFatsStorage.ts`, provisoire en attendant SQLite/ADR 0004), toujours affichés « non vérifié ».
+- [x] Import/export JSON — `recipeFile.ts` via `@tauri-apps/plugin-dialog` + `plugin-fs` ; fichier auto-porteur (embarque la définition des ingrédients personnalisés) ; validation structurelle du fichier importé avant usage. Vérifié en conditions réelles (export puis réimport dans l'app).
+- [x] Additifs, argiles et exfoliants — `AdditiveTable.tsx` : nom, catégorie, masse, totalement séparés du calcul NaOH/eau. Le remplacement d'une partie de l'eau par un liquide (lait, infusion) n'est **pas** pris en charge, signalé explicitement dans l'UI pour éviter tout double comptage.
+- [ ] Module KOH séparé — non traité (hors périmètre de cette itération).
+- [ ] Profils d'acides gras avec sources vérifiées — recherche exploratoire faite, **données jugées insuffisamment fiables/complètes pour intégration** (voir `docs/FATTY_ACID_PROFILES_RESEARCH.md`). Divergence notable trouvée sur le SAP du colza (0,124 vs 0,133 selon la source) à trancher par Guillaume.

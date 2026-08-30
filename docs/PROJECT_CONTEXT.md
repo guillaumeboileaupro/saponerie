@@ -150,6 +150,10 @@ La première liste fonctionnelle devra au minimum prévoir les ingrédients visi
 - cire d’abeille, avec traitement explicite si sa méthode de calcul diffère ;
 - autres ingrédients uniquement après vérification des données.
 
+### Cas particulier : cire d'abeille
+
+Contrairement aux autres corps gras, la masse de cire d'abeille n'est jamais saisie directement par l'utilisateur. Elle est calculée automatiquement comme un pourcentage de la masse des **autres** corps gras de la recette (par défaut 4 %), jamais comme un pourcentage de la soude. L'application affiche ce pourcentage (modifiable) et la masse résultante en lecture seule ; elle recalcule cette masse à chaque changement des autres ingrédients.
+
 Chaque entrée doit comporter :
 
 - un identifiant stable ;

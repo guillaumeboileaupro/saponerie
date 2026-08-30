@@ -1,5 +1,8 @@
+import { useState } from "react";
+import { AdditiveTable } from "./AdditiveTable";
 import { FatPicker } from "./FatPicker";
 import { IngredientTable } from "./IngredientTable";
+import { exportRecipeToFile, importRecipeFromFile } from "./recipeFile";
 import { ResultsPanel } from "./ResultsPanel";
 import { SafetyNotice } from "./SafetyNotice";
 import { WaterModeSelector } from "./WaterModeSelector";
@@ -8,12 +11,48 @@ import "./recipe-editor.css";
 
 export function RecipeEditor() {
   const editor = useRecipeEditor();
+  const [fileMessage, setFileMessage] = useState<string | null>(null);
+
+  async function handleExport() {
+    const outcome = await exportRecipeToFile(editor.state);
+    setFileMessage(outcome.ok ? "Recette exportée." : outcome.message);
+  }
+
+  async function handleImport() {
+    const outcome = await importRecipeFromFile();
+    if (outcome.ok) {
+      editor.loadRecipe({
+        ingredients: outcome.recipe.ingredients,
+        additives: outcome.recipe.additives,
+        superfatPercent: outcome.recipe.superfatPercent,
+        lyePurityPercent: outcome.recipe.lyePurityPercent,
+        waterModeKind: outcome.recipe.waterModeKind,
+        waterModeValue: outcome.recipe.waterModeValue,
+      });
+      setFileMessage("Recette importée.");
+    } else {
+      setFileMessage(outcome.message);
+    }
+  }
 
   return (
     <div className="recipe-editor">
       <header className="app-header">
         <h1>La Saponnerie</h1>
         <p>Calculateur de recette de savon par saponification à froid</p>
+        <div className="header-actions">
+          <button type="button" onClick={handleImport}>
+            Importer un fichier JSON
+          </button>
+          <button type="button" onClick={handleExport}>
+            Exporter en JSON
+          </button>
+        </div>
+        {fileMessage && (
+          <p className="field-hint" role="status">
+            {fileMessage}
+          </p>
+        )}
       </header>
 
       <SafetyNotice />
@@ -28,6 +67,7 @@ export function RecipeEditor() {
             ingredients={editor.state.ingredients}
             breakdown={editor.result?.ingredientBreakdown ?? null}
             onMassChange={editor.setIngredientMass}
+            onBeeswaxPercentChange={editor.setBeeswaxPercent}
             onRemove={editor.removeIngredient}
             onMove={editor.moveIngredient}
           />
@@ -59,6 +99,15 @@ export function RecipeEditor() {
             value={editor.state.waterModeValue}
             onChange={editor.setWaterMode}
           />
+
+          <AdditiveTable
+            additives={editor.state.additives}
+            onAdd={editor.addAdditiveRow}
+            onRemove={editor.removeAdditiveRow}
+            onNameChange={editor.setAdditiveName}
+            onCategoryChange={editor.setAdditiveCategory}
+            onMassChange={editor.setAdditiveMass}
+          />
         </section>
 
         <section className="results-column" aria-labelledby="results-heading">
@@ -68,6 +117,7 @@ export function RecipeEditor() {
             errors={editor.errors}
             isComplete={editor.isComplete}
             isCalculating={editor.isCalculating}
+            additivesTotalMass={editor.additivesTotalMass}
           />
         </section>
       </div>

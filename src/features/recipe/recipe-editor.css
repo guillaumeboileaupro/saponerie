@@ -10,8 +10,14 @@
 }
 
 .app-header p {
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-3);
   color: var(--color-text-muted);
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
 }
 
 .safety-notice {
@@ -258,4 +264,70 @@
   cursor: pointer;
   font-weight: 600;
   color: var(--color-text-muted);
+}
+
+.link-button {
+  border: none;
+  background: none;
+  color: var(--color-primary);
+  padding: var(--space-1) 0;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.link-button:hover {
+  color: var(--color-primary-hover);
+}
+
+.custom-fat-form {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg);
+}
+
+.custom-fat-form .field-group {
+  margin-bottom: var(--space-2);
+}
+
+.custom-fat-form-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.beeswax-mass-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.field-hint-inline {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.additives-section {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.additives-section h3 {
+  margin-top: 0;
+  margin-bottom: var(--space-1);
+}
+
+.additive-table select {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.additive-table input[aria-invalid="true"] {
+  border-color: var(--color-danger);
 }

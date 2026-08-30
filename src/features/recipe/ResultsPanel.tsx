@@ -1,4 +1,5 @@
 import type { CalculationResult, ValidationError } from "../../core/types";
+import { addDecimal } from "./decimalMath";
 import { describeValidationError } from "./describeValidationError";
 import { formatDecimal } from "./formatDecimal";
 
@@ -7,9 +8,16 @@ interface ResultsPanelProps {
   errors: ValidationError[];
   isComplete: boolean;
   isCalculating: boolean;
+  additivesTotalMass: string;
 }
 
-export function ResultsPanel({ result, errors, isComplete, isCalculating }: ResultsPanelProps) {
+export function ResultsPanel({
+  result,
+  errors,
+  isComplete,
+  isCalculating,
+  additivesTotalMass,
+}: ResultsPanelProps) {
   if (!isComplete) {
     return (
       <div className="results-state" role="status">
@@ -63,9 +71,21 @@ export function ResultsPanel({ result, errors, isComplete, isCalculating }: Resu
           <dd>{formatDecimal(result.waterGrams)} g</dd>
         </div>
         <div className="results-row">
-          <dt>Masse totale estimée</dt>
+          <dt>Masse totale estimée (savon)</dt>
           <dd>{formatDecimal(result.totalBatchGrams)} g</dd>
         </div>
+        {additivesTotalMass !== "0" && (
+          <>
+            <div className="results-row">
+              <dt>Additifs</dt>
+              <dd>{formatDecimal(additivesTotalMass)} g</dd>
+            </div>
+            <div className="results-row results-row-highlight">
+              <dt>Masse totale avec additifs</dt>
+              <dd>{formatDecimal(addDecimal(result.totalBatchGrams, additivesTotalMass))} g</dd>
+            </div>
+          </>
+        )}
       </dl>
 
       {result.warnings.length > 0 && (
