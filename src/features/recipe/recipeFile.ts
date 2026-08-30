@@ -1,8 +1,9 @@
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import type { AdditiveCategory, EditorAdditive } from "./additives";
-import { addUserFat, fatsDatasetVersion, getFatsCatalog } from "./fatsCatalog";
-import { BEESWAX_ID, type EditorIngredient, type RecipeEditorState, type WaterModeKind } from "./state";
+import { fatsDatasetVersion, getFatsCatalog } from "./fatsCatalog";
+import { resolveImportedIngredients } from "./resolveImportedIngredients";
+import type { EditorIngredient, RecipeEditorState, WaterModeKind } from "./state";
 
 const FORMAT_VERSION = 1;
 
@@ -184,22 +185,16 @@ export async function importRecipeFromFile(): Promise<
     return { ok: false, message: "Ce fichier n'a pas le format attendu d'une recette La Saponnerie." };
   }
 
-  const catalog = getFatsCatalog();
-  const ingredients: EditorIngredient[] = parsed.ingredients.map((imported) => {
-    const alreadyKnown = catalog.some((candidate) => candidate.fat.id === imported.fat.id);
-    const catalogId = alreadyKnown
-      ? imported.fat.id
-      : addUserFat(imported.fat.displayName, imported.fat.sapNaOH, imported.fat.sapKOH).fat.id;
-
-    return catalogId === BEESWAX_ID
-      ? {
-          key: crypto.randomUUID(),
-          catalogId,
-          massGrams: "",
-          beeswaxPercent: imported.beeswaxPercent ?? "4",
-        }
-      : { key: crypto.randomUUID(), catalogId, massGrams: imported.massGrams };
-  });
+  const ingredients: EditorIngredient[] = resolveImportedIngredients(
+    parsed.ingredients.map((imported) => ({
+      fatId: imported.fat.id,
+      fatDisplayName: imported.fat.displayName,
+      sapNaOH: imported.fat.sapNaOH,
+      sapKOH: imported.fat.sapKOH,
+      massGrams: imported.massGrams,
+      beeswaxPercent: imported.beeswaxPercent,
+    })),
+  );
 
   const additives: EditorAdditive[] = parsed.additives.map((additive) => ({
     key: crypto.randomUUID(),

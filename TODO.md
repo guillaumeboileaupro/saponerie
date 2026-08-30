@@ -26,7 +26,7 @@
 - [x] Créer l'éditeur de recette — `src/features/recipe/RecipeEditor.tsx`, mise en page deux colonnes (recette / résultats) responsive dès 360 px, valeurs initiales explicites (surgras 5 %, pureté 99 %, eau 35 % des corps gras).
 - [x] Créer le sélecteur d'ingrédients — `FatPicker.tsx`, recherche par nom/alias sur `data/fats.2026-08-30.json`, badge « non vérifié » pour les indices `documentary`.
 - [x] Afficher résultats et hypothèses — `ResultsPanel.tsx` : résultats arrondis à l'affichage seulement (`formatDecimal.ts`), avertissements hors plage usuelle, hypothèses dépliables, états vide/erreur/chargement.
-- [ ] Sauvegarder et dupliquer localement.
+- [x] Sauvegarder et dupliquer localement — SQLite via `rusqlite` (bundled), schéma + migrations versionnées dans `src-tauri/src/storage.rs` (ADR 0004), commandes Tauri `sauvegarder_recette`/`lister_recettes`/`charger_recette`/`dupliquer_recette`/`supprimer_recette`. Base dans le dossier de données de l'application (par utilisateur/OS). 9 tests Rust (migrations, CRUD, duplication, suppression en cascade) + vérification manuelle complète dans l'app réelle.
 - [ ] Ajouter impression ou export PDF.
 - [x] Accessibilité clavier et contraste AA — focus visible partout (`:focus-visible`), libellés associés à chaque champ, cibles de contrôle en boutons natifs ; vérifié en pilotant l'app réelle (Tauri sous Xvfb + xdotool) et en contrôlant l'absence de débordement horizontal à 360/768/1280 px (Playwright). Contraste chiffré (ratios WCAG) non mesuré formellement — à auditer avec le skill `security-best-practices`/un outil dédié avant publication.
 
