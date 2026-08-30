@@ -36,7 +36,7 @@
 - [x] Générer et tester le `.deb` — build release, icônes régénérées depuis `assets/logo/logo.svg`, `dpkg -i` puis lancement réel de l'app installée (retrouve la base SQLite existante), puis `dpkg --purge` : cycle complet vérifié sur cette machine.
 - [ ] Générer et tester le `.exe` — build automatisé par la CI (runner Windows réel), **non testé manuellement sur une machine Windows** (impossible depuis Linux, voir skill `tauri-desktop`).
 - [x] Documenter installation et désinstallation — `docs/INSTALLATION.md`.
-- [ ] Choisir licence et politique de publication — décision à prendre par Guillaume.
+- [x] Choisir licence et politique de publication — GPL-3.0-or-later, choisie par Guillaume. Fichier `LICENSE` ajouté, champ `license` renseigné dans `package.json`, `core/Cargo.toml` et `src-tauri/Cargo.toml`.
 
 ## Plus tard
 

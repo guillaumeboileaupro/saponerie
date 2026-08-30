@@ -29,6 +29,7 @@ Le projet est en phase de cadrage. La pile proposée est Tauri 2 + React + TypeS
 - [Contexte fonctionnel et métier](docs/PROJECT_CONTEXT.md)
 - [Architecture proposée](docs/ARCHITECTURE.md)
 - [Sources et provenance](docs/SOURCES.md)
+- [Installation et désinstallation](docs/INSTALLATION.md)
 - [Plan de travail](TODO.md)
 - [Règles de contribution](CONTRIBUTING.md)
 
@@ -43,4 +44,4 @@ Ils ne doivent pas dupliquer les formules ni les règles métier : celles-ci res
 
 ## Licence
 
-À choisir avant la première diffusion publique.
+GNU General Public License v3.0 ou ultérieure (GPL-3.0-or-later) — voir [LICENSE](LICENSE).
