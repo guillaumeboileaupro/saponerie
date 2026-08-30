@@ -1,6 +1,6 @@
 # La Saponnerie
 
-Application de bureau hors ligne pour composer une recette de savon et calculer les quantités de corps gras, de soude et d’eau.
+Application de bureau hors ligne pour composer une recette de savon par saponification à froid et calculer les quantités de corps gras, de soude et d’eau.
 
 ## Objectif
 
@@ -11,11 +11,66 @@ Application de bureau hors ligne pour composer une recette de savon et calculer 
 - sauvegarder et exporter les recettes ;
 - produire des versions installables Ubuntu `.deb` et Windows `.exe`.
 
-> **Sécurité :** les résultats devront être vérifiés et accompagnés d’avertissements. La soude est corrosive et les données SAP peuvent varier selon la matière première.
+> **Sécurité :** la soude caustique est corrosive. La Saponnerie est une aide au calcul, pas une garantie de sécurité ni un substitut à une formation. Les données SAP peuvent varier selon la matière première et leur provenance doit toujours être vérifiée.
 
 ## État
 
-Le projet est en phase de cadrage. La pile proposée est Tauri 2 + React + TypeScript, mais elle doit être confirmée avant l’implémentation.
+Le socle applicatif est fonctionnel. La pile validée est **Tauri 2 + React + TypeScript**, avec un moteur métier pur écrit en **Rust** et des calculs décimaux fondés sur `rust_decimal`.
+
+Fonctionnalités disponibles :
+
+- calcul NaOH multi-huiles, surgras et correction de pureté ;
+- trois méthodes explicites de calcul de l’eau ;
+- ingrédients documentés et ingrédients personnalisés signalés comme non vérifiés ;
+- gestion séparée des additifs ;
+- sauvegarde, duplication et suppression des recettes dans SQLite ;
+- import et export JSON ;
+- interface responsive et utilisable au clavier ;
+- génération automatisée d’un paquet Ubuntu/Debian `.deb` et d’un installateur Windows NSIS `.exe`.
+
+Le projet n’est pas encore prêt pour une diffusion générale. La provenance SAP doit être complétée, les avertissements de sécurité doivent recevoir une relecture humaine qualifiée, les permissions Tauri et la CSP doivent être durcies, et l’installateur Windows doit être testé manuellement. Le suivi détaillé est dans [TODO.md](TODO.md).
+
+## Architecture
+
+- `core/` : moteur de calcul Rust pur et tests métier ;
+- `src/` : interface React et services applicatifs TypeScript ;
+- `src-tauri/` : application native, commandes IPC et stockage SQLite ;
+- `data/` : jeu de données SAP versionné ;
+- `tests/` : parcours de bout en bout Playwright ;
+- `docs/decisions/` : décisions d’architecture.
+
+Le moteur métier ne dépend ni de React, ni de Tauri, ni du stockage. NaOH et KOH restent strictement séparés.
+
+## Développement
+
+Prérequis : Node.js 20, npm, Rust stable et les dépendances système de Tauri 2 pour la plateforme utilisée.
+
+```sh
+npm ci
+npm run tauri dev
+```
+
+Pour lancer uniquement l’interface web :
+
+```sh
+npm run dev
+```
+
+Les fonctions natives Tauri, notamment les calculs Rust et SQLite, ne sont pas disponibles dans un navigateur ordinaire sans simulation.
+
+## Vérifications
+
+```sh
+npm run build
+npm run test:unit
+npm run typecheck:e2e
+npm run test:e2e
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+```
+
+Les tests Playwright nécessitent l’installation préalable de Chromium avec `npx playwright install chromium`. La CI construit et empaquette séparément Linux et Windows ; un build Windows automatisé ne remplace pas un test manuel de l’installateur sur Windows.
 
 ## Travailler avec Codex et Claude
 

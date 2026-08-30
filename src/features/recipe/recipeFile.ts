@@ -159,7 +159,7 @@ function isExportedAdditive(value: unknown): value is ExportedAdditive {
  * plafonne la taille des tableaux et chaînes pour éviter qu'un fichier
  * corrompu ou hostile ne produise un état incohérent dans l'éditeur.
  */
-function isExportedRecipe(value: unknown): value is ExportedRecipe {
+export function isExportedRecipe(value: unknown): value is ExportedRecipe {
   if (typeof value !== "object" || value === null) return false;
   const candidate = value as Record<string, unknown>;
 
