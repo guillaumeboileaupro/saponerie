@@ -1,6 +1,6 @@
 # Contexte projet — La Saponnerie
 
-> Document de cadrage commun pour Claude Code et Codex. À lire entièrement avant toute proposition, planification ou modification du projet.
+> Document de cadrage fonctionnel et métier. À lire entièrement avant toute proposition, planification ou modification du projet.
 
 ## 1. Vision
 

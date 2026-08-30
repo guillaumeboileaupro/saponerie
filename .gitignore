@@ -18,6 +18,12 @@ src-tauri/target/
 .idea/
 *.swp
 
+# Assistants de développement (configuration locale)
+.agents/
+.claude/
+AGENTS.md
+CLAUDE.md
+
 # Système
 .DS_Store
 Thumbs.db

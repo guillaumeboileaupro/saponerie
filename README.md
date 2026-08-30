@@ -85,13 +85,6 @@ cargo test --workspace
 
 Les tests Playwright nécessitent l’installation préalable de Chromium avec `npx playwright install chromium`. La CI construit et empaquette séparément Linux et Windows ; un build Windows automatisé ne remplace pas un test manuel de l’installateur sur Windows.
 
-## Travailler avec Codex et Claude
-
-- Codex commence par [AGENTS.md](AGENTS.md).
-- Claude Code commence par [CLAUDE.md](CLAUDE.md).
-- Les deux utilisent [docs/PROJECT_CONTEXT.md](docs/PROJECT_CONTEXT.md) comme source métier commune.
-- Les décisions structurantes sont consignées dans [docs/decisions/README.md](docs/decisions/README.md).
-
 ## Documentation
 
 - [Contexte fonctionnel et métier](docs/PROJECT_CONTEXT.md)
@@ -100,15 +93,6 @@ Les tests Playwright nécessitent l’installation préalable de Chromium avec `
 - [Installation et désinstallation](docs/INSTALLATION.md)
 - [Plan de travail](TODO.md)
 - [Règles de contribution](CONTRIBUTING.md)
-
-## Skills du projet
-
-Les workflows spécialisés sont destinés à être installés dans :
-
-- `.agents/skills/` pour Codex ;
-- `.claude/skills/` pour Claude Code.
-
-Ils ne doivent pas dupliquer les formules ni les règles métier : celles-ci restent centralisées dans `docs/PROJECT_CONTEXT.md`.
 
 ## Licence
 

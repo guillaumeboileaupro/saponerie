@@ -2,7 +2,7 @@
 
 ## Avant de commencer
 
-Lire `AGENTS.md` ou `CLAUDE.md`, puis `docs/PROJECT_CONTEXT.md`.
+Lire `docs/PROJECT_CONTEXT.md`, puis les décisions d’architecture concernées dans `docs/decisions/`.
 
 ## Branche et changements
 
