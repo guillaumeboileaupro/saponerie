@@ -1,6 +1,6 @@
 [package]
 name = "la-saponnerie"
-version = "0.1.0"
+version = "0.1.1"
 description = "La Saponnerie — calculateur de recettes de savon hors ligne"
 authors = ["Guillaume Boileau"]
 edition = "2021"
