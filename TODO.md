@@ -32,9 +32,9 @@
 
 ## P3 — Distribution
 
-- [x] CI Linux et Windows — `.github/workflows/ci.yml` : job `quality` (fmt, clippy, tests Rust, build TS) puis job `build` en matrice Linux/Windows via `tauri-apps/tauri-action`. Validé avec `actionlint`.
+- [x] CI Linux et Windows — `.github/workflows/ci.yml` : job `quality` (fmt, clippy, tests Rust, build TS) puis job `build` en matrice Linux/Windows via `tauri-apps/tauri-action`, `--bundles` explicite par plateforme (ADR 0005). Validé avec `actionlint` **et par une exécution réelle sur GitHub** (run [33324348711](https://github.com/guillaumeboileaupro/saponerie/actions/runs/33324348711)) : les deux jobs passent et publient chacun un artefact réel (`.deb` ~5,5 Mo, `.exe` NSIS ~3 Mo). Un premier run passait au vert sans jamais publier d'artefact (mauvais chemin + bundles non restreints) — corrigé après lecture des logs réels, pas supposé correct.
 - [x] Générer et tester le `.deb` — build release, icônes régénérées depuis `assets/logo/logo.svg`, `dpkg -i` puis lancement réel de l'app installée (retrouve la base SQLite existante), puis `dpkg --purge` : cycle complet vérifié sur cette machine.
-- [ ] Générer et tester le `.exe` — build automatisé par la CI (runner Windows réel), **non testé manuellement sur une machine Windows** (impossible depuis Linux, voir skill `tauri-desktop`).
+- [ ] Générer et tester le `.exe` — produit par la CI sur un runner Windows réel (voir ci-dessus), **non testé manuellement sur une machine Windows** (impossible depuis Linux, voir skill `tauri-desktop`) : à faire avant toute diffusion.
 - [x] Documenter installation et désinstallation — `docs/INSTALLATION.md`.
 - [x] Choisir licence et politique de publication — GPL-3.0-or-later, choisie par Guillaume. Fichier `LICENSE` ajouté, champ `license` renseigné dans `package.json`, `core/Cargo.toml` et `src-tauri/Cargo.toml`.
 
