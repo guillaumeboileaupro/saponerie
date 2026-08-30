@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-  <title id="title">La Saponnerie — pictogramme minimal</title>
-  <desc id="desc">Un savon arrondi contenant une vague, accompagné d’une bulle.</desc>
-  <g fill="none" stroke="#174A70" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="72" y="160" width="368" height="232" rx="84"/>
-    <path d="M158 283c62-57 122 58 202 0"/>
-    <circle cx="394" cy="110" r="28" fill="#174A70" stroke="none"/>
-  </g>
-</svg>

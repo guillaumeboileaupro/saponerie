@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Logo La Saponnerie</title>
+  <desc id="desc">Un pain de savon bleu en perspective, avec une vague au centre et une bulle au-dessus.</desc>
+  <defs>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17649A"/>
+      <stop offset="1" stop-color="#004B7C"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#blue)" stroke-width="50" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M393 521
+             Q407 463 487 422
+             L794 320
+             Q880 291 956 324
+             Q988 338 1017 366
+             L1105 454
+             Q1151 500 1123 557
+             Q1106 590 1060 616
+             L740 744
+             Q642 782 559 744
+             Q534 733 509 711
+             L421 630
+             Q378 590 393 521Z"/>
+    <path d="M399 550
+             L399 674
+             Q401 730 448 772
+             L516 835
+             Q574 888 660 884
+             Q699 882 742 866
+             L1035 750
+             Q1121 716 1126 641
+             L1126 526"/>
+    <path d="M600 596
+             Q665 527 742 553
+             Q824 581 887 511"/>
+    <circle cx="1105" cy="215" r="113"/>
+    <path d="M1063 217 Q1072 187 1098 177" stroke-width="38"/>
+  </g>
+</svg>
