@@ -15,12 +15,12 @@ Application de bureau hors ligne pour composer une recette de savon par saponifi
 
 ## Télécharger
 
-Version publique actuelle : **[La Saponnerie v0.1.0](https://github.com/guillaumeboileaupro/saponerie/releases/tag/v0.1.0)**.
+Version publique actuelle : **[La Saponnerie v0.1.1](https://github.com/guillaumeboileaupro/saponerie/releases/tag/v0.1.1)**.
 
-- [Windows — télécharger l'installateur `.exe`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.0/La-Saponnerie_0.1.0_x64-setup.exe)
-- [Ubuntu/Debian — télécharger le paquet `.deb`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.0/La-Saponnerie_0.1.0_amd64.deb)
+- [Windows — télécharger l'installateur `.exe`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.1/La.Saponnerie_0.1.1_x64-setup.exe)
+- [Ubuntu/Debian — télécharger le paquet `.deb`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.1/La.Saponnerie_0.1.1_amd64.deb)
 
-L'installateur Windows n'est pas encore signé numériquement. Windows SmartScreen peut afficher un avertissement : vérifier que le fichier provient bien de la page officielle de la release avant de l'exécuter. Le `.exe` a été construit par la CI sur Windows, mais doit encore être testé manuellement sur une machine Windows.
+L'installateur Windows n'est pas encore signé numériquement. Windows SmartScreen peut afficher un avertissement au premier lancement, et le navigateur (Chrome/Edge) peut aussi bloquer le téléchargement en le signalant comme peu téléchargé (avertissement lié à la nouveauté du fichier, pas à un problème réel) : utiliser « Conserver quand même » dans la barre de téléchargement. Vérifier que le fichier provient bien de la page officielle de la release avant de l'exécuter. Le `.exe` a été construit par la CI sur Windows, mais doit encore être testé manuellement sur une machine Windows.
 
 ## État
 
