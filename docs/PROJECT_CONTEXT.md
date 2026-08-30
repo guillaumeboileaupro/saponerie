@@ -154,6 +154,8 @@ La première liste fonctionnelle devra au minimum prévoir les ingrédients visi
 
 Contrairement aux autres corps gras, la masse de cire d'abeille n'est jamais saisie directement par l'utilisateur. Elle est calculée automatiquement comme un pourcentage de la masse des **autres** corps gras de la recette (par défaut 4 %), jamais comme un pourcentage de la soude. L'application affiche ce pourcentage (modifiable) et la masse résultante en lecture seule ; elle recalcule cette masse à chaque changement des autres ingrédients.
 
+Pour le parcours validé par Guillaume, la somme des masses saisies est la base commune des trois sorties : eau à 35 % par défaut, cire à 4 % par défaut et soude théorique réduite à 95 % (surgras de 5 %). La cire calculée reste une sortie séparée : elle n'augmente ni la base du calcul de l'eau, ni celle du calcul de la soude. La pureté initiale est 100 % ; une correction de pureté différente doit être choisie explicitement dans les réglages.
+
 Chaque entrée doit comporter :
 
 - un identifiant stable ;

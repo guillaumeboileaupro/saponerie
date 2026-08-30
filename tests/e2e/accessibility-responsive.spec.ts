@@ -36,6 +36,7 @@ test("les champs principaux sont atteignables et utilisables au clavier", async 
   await massInput.focus();
   await page.keyboard.type("100");
   await expect(massInput).toHaveValue("100");
+  await expect(page.getByLabel("Pourcentage de cire d'abeille")).toHaveValue("4");
 });
 
 test("le surgras et la pureté restent modifiables par tabulation depuis le tableau d'ingrédients", async ({
@@ -50,6 +51,7 @@ test("le surgras et la pureté restent modifiables par tabulation depuis le tabl
 
   // Le surgras doit être accessible après le champ de masse dans l'ordre
   // naturel de tabulation (aucun piège de focus).
+  await page.getByText("Réglages de la recette").click();
   await page.locator("#superfat").focus();
   await page.keyboard.press("Control+A");
   await page.keyboard.type("8");

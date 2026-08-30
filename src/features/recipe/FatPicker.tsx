@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
 import { CustomFatForm } from "./CustomFatForm";
+import { BEESWAX_ID } from "./state";
 import {
   describeProvenance,
   filterFatsCatalog,
@@ -17,7 +18,9 @@ export function FatPicker({ onSelect }: FatPickerProps) {
   const [showCustomForm, setShowCustomForm] = useState(false);
   const listId = useId();
   const catalog = useFatsCatalog();
-  const matches = filterFatsCatalog(catalog, query);
+  const matches = filterFatsCatalog(catalog, query).filter(
+    (entry) => entry.fat.id !== BEESWAX_ID,
+  );
 
   function handleCreated(entry: FatCatalogEntry) {
     onSelect(entry.fat.id);
@@ -28,7 +31,7 @@ export function FatPicker({ onSelect }: FatPickerProps) {
   return (
     <div className="fat-picker">
       <label htmlFor={`${listId}-input`} className="field-label">
-        Ajouter un corps gras
+        Ajouter une huile ou un beurre
       </label>
       <input
         id={`${listId}-input`}
@@ -40,7 +43,7 @@ export function FatPicker({ onSelect }: FatPickerProps) {
         autoComplete="off"
       />
       <ul id={listId} className="fat-picker-results">
-        {matches.length === 0 && <li className="fat-picker-empty">Aucun corps gras trouvé.</li>}
+        {matches.length === 0 && <li className="fat-picker-empty">Aucune huile trouvée.</li>}
         {matches.map((entry) => (
           <li key={entry.fat.id}>
             <button

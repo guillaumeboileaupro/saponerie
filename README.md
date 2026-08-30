@@ -30,6 +30,7 @@ Fonctionnalités disponibles :
 
 - calcul NaOH multi-huiles, surgras et correction de pureté ;
 - trois méthodes explicites de calcul de l’eau ;
+- masse de cire d’abeille calculée automatiquement (pourcentage réglable des autres corps gras), présentée comme une sortie séparée du calcul soude/eau ;
 - ingrédients documentés et ingrédients personnalisés signalés comme non vérifiés ;
 - gestion séparée des additifs ;
 - sauvegarde, duplication et suppression des recettes dans SQLite ;

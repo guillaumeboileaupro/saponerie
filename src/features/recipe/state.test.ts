@@ -5,6 +5,7 @@ import {
   buildRecipeInput,
   computeBeeswaxMass,
   computeOtherOilsTotal,
+  ensureBeeswaxIngredient,
   initialRecipeEditorState,
   isBeeswaxRow,
   moveIngredientRow,
@@ -40,6 +41,23 @@ describe("addIngredientRow", () => {
     expect(isBeeswaxRow(row)).toBe(true);
     expect(row.beeswaxPercent).toBe("4");
     expect(row.massGrams).toBe("");
+  });
+
+  it("ajoute automatiquement une seule ligne de cire à une recette", () => {
+    const withWax = ensureBeeswaxIngredient(initialRecipeEditorState);
+    const unchanged = ensureBeeswaxIngredient(withWax);
+
+    expect(withWax.ingredients).toHaveLength(1);
+    expect(isBeeswaxRow(withWax.ingredients[0])).toBe(true);
+    expect(unchanged).toBe(withWax);
+  });
+
+  it("n'ajoute pas deux fois le même corps gras", () => {
+    const once = addIngredientRow(initialRecipeEditorState, "olive");
+    const twice = addIngredientRow(once, "olive");
+
+    expect(twice).toBe(once);
+    expect(twice.ingredients).toHaveLength(1);
   });
 });
 
@@ -120,18 +138,19 @@ describe("buildRecipeInput", () => {
       { fat: { id: "olive", displayName: "Olive", sapNaOH: "0.134", sapKOH: null }, massGrams: "320" },
     ]);
     expect(input?.superfatPercent).toBe("5");
+    expect(input?.lyePurityPercent).toBe("100");
     expect(input?.waterMode).toEqual({ mode: "percentOfOils", value: "35" });
   });
 
-  it("résout la masse de cire d'abeille avant de construire l'entrée moteur", () => {
+  it("garde la cire comme sortie séparée de la base eau/soude", () => {
     let state = withIngredient("olive", "320");
     state = addIngredientRow(state, "coco");
     state = updateIngredientMass(state, state.ingredients[1].key, "200");
     state = addIngredientRow(state, "cire-abeille");
 
     const input = buildRecipeInput(state);
-    const beeswaxIngredient = input?.ingredients.find((i) => i.fat.id === "cire-abeille");
-    expect(beeswaxIngredient?.massGrams).toBe("20.80");
+    expect(computeBeeswaxMass(state.ingredients, state.ingredients[2])).toBe("20.80");
+    expect(input?.ingredients.map((ingredient) => ingredient.fat.id)).toEqual(["olive", "coco"]);
   });
 
   it("renvoie null si l'identifiant du corps gras est inconnu du catalogue", () => {

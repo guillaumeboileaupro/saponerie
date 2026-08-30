@@ -4,19 +4,25 @@
    périmètre du premier jalon (§7 de docs/PROJECT_CONTEXT.md). */
 :root {
   --color-primary: #174a70;
-  --color-primary-hover: #123a59;
-  --color-primary-soft: #e5edf3;
-  --color-bg: #faf6f0;
+  --color-primary-hover: #103a59;
+  --color-primary-soft: #e8f0f5;
+  --color-accent: #8a5a16;
+  --color-success: #287553;
+  --color-wax: #c58a25;
+  --color-wax-bg: #fff6df;
+  --color-bg: #f4f6f5;
   --color-surface: #ffffff;
-  --color-border: #e2d9cb;
-  --color-text: #241f1a;
-  --color-text-muted: #6b6259;
+  --color-surface-subtle: #eef2f0;
+  --color-border: #d9e0dd;
+  --color-border-strong: #b8c5c0;
+  --color-text: #17211e;
+  --color-text-muted: #5b6964;
   --color-danger: #9a2f24;
   --color-danger-bg: #fbeae7;
   --color-warning: #7a5300;
   --color-warning-bg: #fdf1da;
 
-  --radius-md: 10px;
+  --radius-md: 8px;
   --radius-sm: 6px;
 
   --space-1: 4px;
@@ -55,7 +61,7 @@ body {
 h1,
 h2,
 h3 {
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.25;
 }
 
@@ -76,6 +82,10 @@ input[type="text"] {
   padding: var(--space-2) var(--space-3);
   background-color: var(--color-surface);
   color: var(--color-text);
+}
+
+input[type="text"]:focus {
+  border-color: var(--color-primary);
 }
 
 input[type="text"]:disabled {

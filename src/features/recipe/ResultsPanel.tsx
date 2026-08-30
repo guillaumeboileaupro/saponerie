@@ -11,6 +11,7 @@ interface ResultsPanelProps {
   isComplete: boolean;
   isCalculating: boolean;
   additivesTotalMass: string;
+  beeswaxMass: string | null;
 }
 
 export function ResultsPanel({
@@ -20,6 +21,7 @@ export function ResultsPanel({
   isComplete,
   isCalculating,
   additivesTotalMass,
+  beeswaxMass,
 }: ResultsPanelProps) {
   if (!isComplete) {
     return (
@@ -62,6 +64,24 @@ export function ResultsPanel({
 
   return (
     <div aria-live="polite">
+      <div className="primary-results" aria-label="Quantités principales à peser">
+        <div>
+          <span>Cire d'abeille</span>
+          <strong>{beeswaxMass ? formatDecimal(beeswaxMass) : "—"}</strong>
+          <small>grammes</small>
+        </div>
+        <div className="primary-result-main">
+          <span>Soude NaOH</span>
+          <strong>{formatDecimal(result.weighedNaohGrams)}</strong>
+          <small>grammes à peser</small>
+        </div>
+        <div>
+          <span>Eau</span>
+          <strong>{formatDecimal(result.waterGrams)}</strong>
+          <small>grammes</small>
+        </div>
+      </div>
+
       <dl className="results-summary">
         <div className="results-row">
           <dt>Masse totale des corps gras</dt>
@@ -74,14 +94,6 @@ export function ResultsPanel({
         <div className="results-row">
           <dt>NaOH après surgras</dt>
           <dd>{formatDecimal(result.discountedNaohGrams)} g</dd>
-        </div>
-        <div className="results-row results-row-highlight">
-          <dt>NaOH à peser</dt>
-          <dd>{formatDecimal(result.weighedNaohGrams)} g</dd>
-        </div>
-        <div className="results-row results-row-highlight">
-          <dt>Eau</dt>
-          <dd>{formatDecimal(result.waterGrams)} g</dd>
         </div>
         <div className="results-row">
           <dt>Masse totale estimée (savon)</dt>

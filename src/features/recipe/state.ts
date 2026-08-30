@@ -36,12 +36,14 @@ export interface RecipeEditorState {
 
 // Valeurs initiales explicites et modifiables (§3 de docs/PROJECT_CONTEXT.md) :
 // surgras et méthode d'eau dans la plage usuelle proposée en §4.6, pureté
-// alignée sur une soude commerciale courante à 99 %.
+// La sortie principale demandée est la soude théorique réduite à 95 % : la
+// pureté initiale reste donc à 100 % et toute correction doit être choisie
+// explicitement dans les réglages avancés.
 export const initialRecipeEditorState: RecipeEditorState = {
   ingredients: [],
   additives: [],
   superfatPercent: "5",
-  lyePurityPercent: "99",
+  lyePurityPercent: "100",
   waterModeKind: "percentOfOils",
   waterModeValue: "35",
 };
@@ -55,11 +57,20 @@ export function isBeeswaxRow(row: EditorIngredient): boolean {
 }
 
 export function addIngredientRow(state: RecipeEditorState, catalogId: string): RecipeEditorState {
+  if (state.ingredients.some((row) => row.catalogId === catalogId)) {
+    return state;
+  }
   const row: EditorIngredient =
     catalogId === BEESWAX_ID
       ? { key: newRowKey(), catalogId, massGrams: "", beeswaxPercent: DEFAULT_BEESWAX_PERCENT }
       : { key: newRowKey(), catalogId, massGrams: "" };
   return { ...state, ingredients: [...state.ingredients, row] };
+}
+
+/** Garantit que la cire calculée fait partie de chaque recette, sans demander
+ * à l'utilisateur de l'ajouter comme un corps gras ordinaire. */
+export function ensureBeeswaxIngredient(state: RecipeEditorState): RecipeEditorState {
+  return state.ingredients.some(isBeeswaxRow) ? state : addIngredientRow(state, BEESWAX_ID);
 }
 
 export function removeIngredientRow(state: RecipeEditorState, key: string): RecipeEditorState {
@@ -174,21 +185,24 @@ export function replaceRecipe(
  * partiel sur des champs incomplets.
  */
 export function buildRecipeInput(state: RecipeEditorState): RecipeInput | null {
-  if (state.ingredients.length === 0) {
+  if (!state.ingredients.some((row) => !isBeeswaxRow(row))) {
     return null;
   }
 
   const catalog = getFatsCatalog();
   const ingredients: RecipeIngredient[] = [];
   for (const row of state.ingredients) {
+    // La cire est l'une des trois sorties calculées à partir des masses
+    // saisies. Elle n'entre pas dans la base eau/soude de ce parcours.
+    if (isBeeswaxRow(row)) {
+      continue;
+    }
     const entry = catalog.find((candidate) => candidate.fat.id === row.catalogId);
     if (!entry) {
       return null;
     }
-    const massGrams = isBeeswaxRow(row)
-      ? computeBeeswaxMass(state.ingredients, row)
-      : row.massGrams.trim();
-    if (massGrams === null || !isValidPositiveDecimal(massGrams)) {
+    const massGrams = row.massGrams.trim();
+    if (!isValidPositiveDecimal(massGrams)) {
       return null;
     }
     ingredients.push({ fat: entry.fat, massGrams });

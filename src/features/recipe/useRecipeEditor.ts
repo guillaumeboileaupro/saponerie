@@ -6,6 +6,7 @@ import {
   addAdditive,
   addIngredientRow,
   buildRecipeInput,
+  ensureBeeswaxIngredient,
   initialRecipeEditorState,
   moveIngredientRow,
   removeAdditive,
@@ -47,7 +48,9 @@ export interface RecipeEditorApi {
 }
 
 export function useRecipeEditor(): RecipeEditorApi {
-  const [state, setState] = useState<RecipeEditorState>(initialRecipeEditorState);
+  const [state, setState] = useState<RecipeEditorState>(() =>
+    ensureBeeswaxIngredient(initialRecipeEditorState),
+  );
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [technicalError, setTechnicalError] = useState<string | null>(null);
@@ -124,6 +127,6 @@ export function useRecipeEditor(): RecipeEditorApi {
       setState((prev) => updateAdditive(prev, key, { category })),
     setAdditiveMass: (key, massGrams) =>
       setState((prev) => updateAdditive(prev, key, { massGrams })),
-    loadRecipe: (next) => setState(() => replaceRecipe(next)),
+    loadRecipe: (next) => setState(() => ensureBeeswaxIngredient(replaceRecipe(next))),
   };
 }

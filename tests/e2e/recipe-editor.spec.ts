@@ -6,6 +6,10 @@ function resultRow(page: import("@playwright/test").Page, label: string) {
   return page.locator(".results-row", { hasText: label });
 }
 
+function primaryResult(page: import("@playwright/test").Page, label: string) {
+  return page.locator(".primary-results > div", { hasText: label });
+}
+
 test.beforeEach(async ({ page }) => {
   await installTauriMock(page);
   await page.goto("/");
@@ -18,11 +22,13 @@ test("une recette vide invite à ajouter un corps gras, sans appeler le moteur",
 test("une recette valide affiche des résultats cohérents", async ({ page }) => {
   await addIngredient(page, "Olive", "320");
 
-  // 320 g × 0,134 (SAP NaOH olive) = 42,88 g de NaOH théorique, arrondi à
-  // 42,9 g pour l'affichage (voir formatDecimal.ts — la valeur exacte n'est
-  // jamais tronquée pour le calcul, seulement pour la présentation).
+  // Les trois sorties partagent la même base de 320 g : cire 4 %, eau 35 %,
+  // soude théorique réduite à 95 % avec une pureté initiale de 100 %.
+  await expect(primaryResult(page, "Cire d'abeille")).toContainText("12.8");
+  await expect(primaryResult(page, "Soude NaOH")).toContainText("40.7");
+  await expect(primaryResult(page, "Eau")).toContainText("112.0");
   await expect(resultRow(page, "NaOH théorique")).toContainText("42.9");
-  await expect(resultRow(page, "Masse totale des corps gras")).toContainText("320");
+  await expect(resultRow(page, "Masse totale des corps gras")).toContainText("320.0");
 });
 
 test("une recette invalide (surgras hors bornes) affiche une erreur métier, pas un crash", async ({
@@ -30,6 +36,7 @@ test("une recette invalide (surgras hors bornes) affiche une erreur métier, pas
 }) => {
   await addIngredient(page, "Olive", "320");
 
+  await page.getByText("Réglages de la recette").click();
   await page.locator("#superfat").fill("50");
 
   await expect(page.getByRole("alert")).toContainText("Recette non exploitable");
@@ -39,16 +46,15 @@ test("une recette invalide (surgras hors bornes) affiche une erreur métier, pas
 test("changer la méthode de calcul de l'eau recalcule le résultat", async ({ page }) => {
   await addIngredient(page, "Olive", "1000");
 
-  // Méthode par défaut : 35 % des corps gras => 350 g d'eau.
-  await expect(resultRow(page, "Eau")).toContainText("350");
+  // Méthode par défaut : 35 % des 1000 g saisis => 350 g.
+  await expect(primaryResult(page, "Eau")).toContainText("350");
 
+  await page.getByText("Réglages de la recette").click();
   await page.getByRole("radio", { name: "Ratio eau / soude" }).check();
   await page.getByLabel("Valeur pour Ratio eau / soude").fill("2");
 
-  // Avec les valeurs initiales par défaut (surgras 5 %, pureté 99 %) :
-  // théorique 1000 × 0,134 = 134 ; après surgras 134 × 0,95 = 127.3 ;
-  // à peser 127.3 / 0.99 ≈ 128,586 ; eau = 128,586 × 2 ≈ 257,2 g.
-  await expect(resultRow(page, "Eau")).toContainText("257.2");
+  // 1000 × 0,134 × 95 % = 127,3 g de soude ; ratio 2 => 254,6 g d'eau.
+  await expect(primaryResult(page, "Eau")).toContainText("254.6");
 });
 
 test("un surgras dans la plage usuelle ne déclenche pas d'avertissement, un surgras élevé si", async ({
@@ -57,6 +63,7 @@ test("un surgras dans la plage usuelle ne déclenche pas d'avertissement, un sur
   await addIngredient(page, "Olive", "1000");
   await expect(page.locator(".results-warnings")).toHaveCount(0);
 
+  await page.getByText("Réglages de la recette").click();
   await page.locator("#superfat").fill("20");
   await expect(page.locator(".results-warnings")).toContainText("plage usuelle");
 });

@@ -4,7 +4,13 @@ import { ADDITIVE_CATEGORIES, type AdditiveCategory, type EditorAdditive } from 
 import { isValidPositiveDecimal } from "./decimal";
 import { fatsDatasetVersion, getFatsCatalog } from "./fatsCatalog";
 import { resolveImportedIngredients } from "./resolveImportedIngredients";
-import type { EditorIngredient, RecipeEditorState, WaterModeKind } from "./state";
+import {
+  computeBeeswaxMass,
+  isBeeswaxRow,
+  type EditorIngredient,
+  type RecipeEditorState,
+  type WaterModeKind,
+} from "./state";
 
 const FORMAT_VERSION = 1;
 
@@ -95,7 +101,9 @@ export function buildExportedRecipe(state: RecipeEditorState): ExportedRecipe {
           status: entry?.status ?? "user_defined",
           verifiedAt: entry?.verifiedAt ?? null,
         },
-        massGrams: row.massGrams,
+        massGrams: isBeeswaxRow(row)
+          ? (computeBeeswaxMass(state.ingredients, row) ?? "0")
+          : row.massGrams,
         beeswaxPercent: row.beeswaxPercent,
       };
     }),

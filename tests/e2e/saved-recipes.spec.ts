@@ -5,6 +5,7 @@ import { installTauriMock } from "./support/mockTauri";
 test.beforeEach(async ({ page }) => {
   await installTauriMock(page);
   await page.goto("/");
+  await page.getByText("Recettes et fichiers").click();
 });
 
 test("enregistrer une recette puis la rouvrir restitue son contenu", async ({ page }) => {

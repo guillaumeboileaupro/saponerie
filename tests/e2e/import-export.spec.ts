@@ -7,11 +7,16 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
+async function openFiles(page: import("@playwright/test").Page) {
+  await page.getByText("Recettes et fichiers").click();
+}
+
 test("un fichier JSON syntaxiquement invalide affiche une erreur claire, sans crasher l'app", async ({
   page,
 }) => {
   await setNextOpenPath(page, "/mock/malformed.json");
-  await page.getByRole("button", { name: "Importer un fichier JSON" }).click();
+  await openFiles(page);
+  await page.getByRole("button", { name: "Importer JSON" }).click();
 
   await expect(page.getByText(/JSON invalide/i)).toBeVisible();
   // L'application reste utilisable après l'échec d'import.
@@ -20,7 +25,8 @@ test("un fichier JSON syntaxiquement invalide affiche une erreur claire, sans cr
 
 test("un fichier bien formé en JSON mais de forme inattendue est rejeté", async ({ page }) => {
   await setNextOpenPath(page, "/mock/wrong-shape.json");
-  await page.getByRole("button", { name: "Importer un fichier JSON" }).click();
+  await openFiles(page);
+  await page.getByRole("button", { name: "Importer JSON" }).click();
 
   await expect(page.getByText(/format attendu/i)).toBeVisible();
 });
@@ -28,8 +34,10 @@ test("un fichier bien formé en JSON mais de forme inattendue est rejeté", asyn
 test("exporter puis réimporter restitue fidèlement la recette", async ({ page }) => {
   await addIngredient(page, "Olive", "320");
 
-  await page.getByRole("button", { name: "Exporter en JSON" }).click();
+  await openFiles(page);
+  await page.getByRole("button", { name: "Exporter JSON" }).click();
   await expect(page.getByText("Recette exportée.")).toBeVisible();
+  await page.getByText("Recettes et fichiers").click();
 
   // Repartir d'une recette vide avant de réimporter, pour vérifier que
   // l'import restitue bien les données plutôt que de les laisser par
@@ -38,7 +46,8 @@ test("exporter puis réimporter restitue fidèlement la recette", async ({ page 
   await expect(page.getByText("Complétez la recette")).toBeVisible();
 
   await setNextOpenPath(page, "/mock/export.json");
-  await page.getByRole("button", { name: "Importer un fichier JSON" }).click();
+  await openFiles(page);
+  await page.getByRole("button", { name: "Importer JSON" }).click();
 
   await expect(page.getByText("Recette importée.")).toBeVisible();
   await expect(page.locator("tr", { hasText: "Olive" }).locator("input.mass-input")).toHaveValue("320");
