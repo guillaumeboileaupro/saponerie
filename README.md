@@ -19,8 +19,11 @@ Version publique actuelle : **[La Saponnerie v0.1.1](https://github.com/guillaum
 
 - [Windows — télécharger l'installateur `.exe`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.1/La.Saponnerie_0.1.1_x64-setup.exe)
 - [Ubuntu/Debian — télécharger le paquet `.deb`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.1/La.Saponnerie_0.1.1_amd64.deb)
+- [Android — télécharger le paquet `.apk`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.1/La.Saponnerie_0.1.1_android.apk)
 
 L'installateur Windows n'est pas encore signé numériquement. Windows SmartScreen peut afficher un avertissement au premier lancement, et le navigateur (Chrome/Edge) peut aussi bloquer le téléchargement en le signalant comme peu téléchargé (avertissement lié à la nouveauté du fichier, pas à un problème réel) : utiliser « Conserver quand même » dans la barre de téléchargement. Vérifier que le fichier provient bien de la page officielle de la release avant de l'exécuter. Le `.exe` a été construit par la CI sur Windows, mais doit encore être testé manuellement sur une machine Windows.
+
+L'APK Android n'est pas distribué via le Play Store : il est signé avec une clé de release dédiée au projet, mais Android affichera un avertissement car l'application ne provient pas d'un magasin reconnu. Autoriser l'installation depuis le navigateur ou le gestionnaire de fichiers (« Installer des applications inconnues ») pour ce fichier uniquement, après avoir vérifié qu'il provient bien de la page officielle de la release. Compatible Android 7.0 (API 24) et plus, architectures ARM64 et ARM32.
 
 ## État
 
@@ -36,7 +39,7 @@ Fonctionnalités disponibles :
 - sauvegarde, duplication et suppression des recettes dans SQLite ;
 - import et export JSON ;
 - interface responsive et utilisable au clavier ;
-- génération automatisée d’un paquet Ubuntu/Debian `.deb` et d’un installateur Windows NSIS `.exe`.
+- génération automatisée d’un paquet Ubuntu/Debian `.deb`, d’un installateur Windows NSIS `.exe` et d’un paquet Android `.apk`.
 
 La version `v0.1.0` est publiée et téléchargeable. Elle reste une première version à évaluer : la provenance SAP doit être complétée, les avertissements de sécurité doivent recevoir une relecture humaine qualifiée, les permissions Tauri et la CSP doivent être durcies, et l'installateur Windows doit être testé manuellement. Le suivi détaillé est dans [TODO.md](TODO.md).
 
