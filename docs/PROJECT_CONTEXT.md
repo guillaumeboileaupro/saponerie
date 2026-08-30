@@ -118,6 +118,23 @@ L’écran doit toujours afficher la méthode active et ses paramètres. Ne jama
 - Afficher par défaut les masses au dixième de gramme, avec une option adaptée à la précision de la balance.
 - Ne jamais effectuer les calculs métier à partir de valeurs déjà arrondies.
 
+### 4.6 Bornes de validation (proposition à confirmer)
+
+Ces bornes sont une proposition initiale, alignée sur les pratiques usuelles de la saponification à froid (calculateurs de savon de référence). Elles doivent être confirmées par Guillaume avant d'être considérées comme définitives ; voir [ADR 0002](decisions/0002-langage-moteur-decimal.md) pour le moteur qui les applique.
+
+| Paramètre | Borne stricte (refus) | Plage usuelle (avertissement hors plage) |
+| --- | --- | --- |
+| Masse d'un corps gras | `> 0`, obligatoire | — |
+| Surgras `s` | `0 % ≤ s ≤ 30 %` | recommandé `0–15 %` |
+| Pureté de la soude `p` | `0 % < p ≤ 100 %` | recommandé `90–100 %` |
+| Concentration de solution `c` | `0 < c < 1` (contrainte mathématique de la formule) | recommandé `0,25–0,40` |
+| Ratio eau/soude `r` | `r > 0` | recommandé `1–3` |
+| Pourcentage des corps gras `w` | `0 % < w ≤ 100 %` | recommandé `30–40 %` |
+
+- Une valeur en dehors de la borne stricte est refusée (aucun résultat exploitable affiché).
+- Une valeur en dehors de la plage usuelle mais dans la borne stricte est acceptée mais accompagnée d'un avertissement visible (recette non conventionnelle, à vérifier par l'utilisateur).
+- Ces plages ne remplacent pas un jugement professionnel ; elles évitent seulement les erreurs de saisie grossières.
+
 ## 5. Données des corps gras
 
 La première liste fonctionnelle devra au minimum prévoir les ingrédients visibles dans les documents :

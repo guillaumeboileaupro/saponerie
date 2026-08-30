@@ -1,0 +1,8 @@
+[package]
+name = "saponerie-core"
+version = "0.1.0"
+edition = "2021"
+description = "Moteur de calcul pur de La Saponnerie (NaOH, surgras, pureté, eau)."
+
+[dependencies]
+rust_decimal = "1"
