@@ -11,6 +11,18 @@
 - [ ] Valider les avertissements de sécurité — texte proposé en §6 de `docs/PROJECT_CONTEXT.md`, relecture humaine/experte encore requise avant publication.
 - [x] Créer les ADR correspondants — `docs/decisions/0001` à `0005`.
 
+## P0 — Corrections requises avant diffusion
+
+- [ ] Compléter chaque entrée SAP avec ses références exactes, sa version/date de vérification et son statut. Afficher systématiquement la source et la version du jeu de données dans l'éditeur, les résultats et les exports.
+- [ ] Restreindre les capacités Tauri d'import/export aux seuls fichiers choisis par l'utilisateur ; supprimer les autorisations globales de lecture et d'écriture sur `$HOME/**`.
+- [ ] Définir et tester une CSP Tauri restrictive à la place de `"csp": null`.
+- [ ] Renforcer la validation des imports JSON : version de format prise en charge, méthodes d'eau et catégories autorisées, décimaux valides, longueurs, nombre d'éléments et taille maximale du fichier.
+- [ ] Distinguer les erreurs métier du moteur des erreurs techniques IPC ; ne plus convertir aveuglément toute erreur Tauri en `ValidationError[]` et couvrir le cas par un test.
+- [ ] Ajouter une suite de tests frontend et Playwright versionnée : recette vide, calcul valide/invalide, changement de méthode d'eau, import malformé, sauvegarde/réouverture, duplication, suppression et navigation clavier aux largeurs 360, 768 et 1280 px.
+- [ ] Ajouter les tests frontend et Playwright à la CI, avec capture et trace en cas d'échec.
+- [ ] Auditer les dépendances npm et Cargo, documenter les résultats et traiter les vulnérabilités applicables sans mise à jour majeure aveugle.
+- [ ] Faire exécuter localement `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings` et `cargo test --workspace` sur une machine équipée de Rust, en complément du résultat CI.
+
 ## P1 — Moteur
 
 - [x] Définir les types métier — `core/src/types.rs`.
@@ -27,8 +39,10 @@
 - [x] Créer le sélecteur d'ingrédients — `FatPicker.tsx`, recherche par nom/alias sur `data/fats.2026-08-30.json`, badge « non vérifié » pour les indices `documentary`.
 - [x] Afficher résultats et hypothèses — `ResultsPanel.tsx` : résultats arrondis à l'affichage seulement (`formatDecimal.ts`), avertissements hors plage usuelle, hypothèses dépliables, états vide/erreur/chargement.
 - [x] Sauvegarder et dupliquer localement — SQLite via `rusqlite` (bundled), schéma + migrations versionnées dans `src-tauri/src/storage.rs` (ADR 0004), commandes Tauri `sauvegarder_recette`/`lister_recettes`/`charger_recette`/`dupliquer_recette`/`supprimer_recette`. Base dans le dossier de données de l'application (par utilisateur/OS). 9 tests Rust (migrations, CRUD, duplication, suppression en cascade) + vérification manuelle complète dans l'app réelle.
-- [ ] Ajouter impression ou export PDF.
-- [x] Accessibilité clavier et contraste AA — focus visible partout (`:focus-visible`), libellés associés à chaque champ, cibles de contrôle en boutons natifs ; vérifié en pilotant l'app réelle (Tauri sous Xvfb + xdotool) et en contrôlant l'absence de débordement horizontal à 360/768/1280 px (Playwright). Contraste chiffré (ratios WCAG) non mesuré formellement — à auditer avec le skill `security-best-practices`/un outil dédié avant publication.
+- [ ] Ajouter impression ou export PDF, avec les hypothèses, la source/version des données et les avertissements de sécurité.
+- [ ] Demander une confirmation explicite avant d'afficher ou d'imprimer la fiche de fabrication finale.
+- [x] Ajouter les bases d'accessibilité clavier — focus visible (`:focus-visible`), libellés associés et contrôles natifs ; absence de débordement horizontal vérifiée à 360/768/1280 px.
+- [ ] Mesurer formellement les contrastes WCAG AA, corriger les écarts et conserver le rapport ou les tests reproductibles dans le dépôt.
 
 ## P3 — Distribution
 
