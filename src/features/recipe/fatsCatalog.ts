@@ -15,6 +15,8 @@ export interface FatCatalogEntry {
   aliases: string[];
   source: string;
   status: SapStatus;
+  verifiedAt: string | null;
+  crossCheckNote: string | null;
 }
 
 interface RawFatEntry {
@@ -26,6 +28,7 @@ interface RawFatEntry {
   source: string;
   status: string;
   verifiedAt: string | null;
+  crossCheckNote?: string;
   isUserDefined: boolean;
 }
 
@@ -48,6 +51,8 @@ const baseCatalog: FatCatalogEntry[] = raw.fats.map((entry) => ({
   aliases: entry.aliases,
   source: entry.source,
   status: entry.status as SapStatus,
+  verifiedAt: entry.verifiedAt,
+  crossCheckNote: entry.crossCheckNote ?? null,
 }));
 
 function userFatToEntry(definition: UserFatDefinition): FatCatalogEntry {
@@ -61,6 +66,8 @@ function userFatToEntry(definition: UserFatDefinition): FatCatalogEntry {
     aliases: [],
     source: "utilisateur",
     status: "user_defined",
+    verifiedAt: null,
+    crossCheckNote: null,
   };
 }
 
@@ -128,4 +135,28 @@ export function filterFatsCatalog(entries: FatCatalogEntry[], query: string): Fa
 
 export function isUnverified(status: SapStatus): boolean {
   return status === "documentary" || status === "user_defined";
+}
+
+const STATUS_LABELS: Record<SapStatus, string> = {
+  documentary: "documentaire, à vérifier",
+  cross_checked: "recoupé avec plusieurs sources",
+  verified: "vérifié",
+  user_defined: "saisi par l'utilisateur, non vérifié",
+};
+
+/**
+ * Provenance lisible d'un ingrédient, affichée systématiquement (§ revue
+ * sécurité/qualité : la source et la version du jeu de données doivent
+ * apparaître dans l'éditeur, les résultats et les exports, pas seulement
+ * pour les entrées non vérifiées).
+ */
+export function describeProvenance(entry: FatCatalogEntry): string {
+  const parts = [`Source : ${entry.source}`, `Statut : ${STATUS_LABELS[entry.status]}`];
+  if (entry.verifiedAt) {
+    parts.push(`Vérifié le ${entry.verifiedAt}`);
+  }
+  if (entry.crossCheckNote) {
+    parts.push(entry.crossCheckNote);
+  }
+  return parts.join(" — ");
 }

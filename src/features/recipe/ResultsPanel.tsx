@@ -1,11 +1,13 @@
 import type { CalculationResult, ValidationError } from "../../core/types";
 import { addDecimal } from "./decimalMath";
 import { describeValidationError } from "./describeValidationError";
+import { fatsDatasetVersion } from "./fatsCatalog";
 import { formatDecimal } from "./formatDecimal";
 
 interface ResultsPanelProps {
   result: CalculationResult | null;
   errors: ValidationError[];
+  technicalError: string | null;
   isComplete: boolean;
   isCalculating: boolean;
   additivesTotalMass: string;
@@ -14,6 +16,7 @@ interface ResultsPanelProps {
 export function ResultsPanel({
   result,
   errors,
+  technicalError,
   isComplete,
   isCalculating,
   additivesTotalMass,
@@ -22,6 +25,16 @@ export function ResultsPanel({
     return (
       <div className="results-state" role="status">
         Complétez la recette (au moins un corps gras avec sa masse) pour voir les résultats.
+      </div>
+    );
+  }
+
+  if (technicalError) {
+    return (
+      <div className="results-state results-state-error" role="alert">
+        <p>Le calcul n'a pas pu être effectué (erreur technique, pas un problème de recette) :</p>
+        <p>{technicalError}</p>
+        <p className="field-hint">Réessayez ; si le problème persiste, signalez-le avec ce message.</p>
       </div>
     );
   }
@@ -102,6 +115,7 @@ export function ResultsPanel({
           {result.assumptions.map((assumption) => (
             <li key={assumption}>{assumption}</li>
           ))}
+          <li>Jeu de données des corps gras : version {fatsDatasetVersion}</li>
         </ul>
       </details>
     </div>

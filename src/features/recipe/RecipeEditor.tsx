@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AdditiveTable } from "./AdditiveTable";
 import { FatPicker } from "./FatPicker";
 import { IngredientTable } from "./IngredientTable";
+import { fatsDatasetVersion } from "./fatsCatalog";
 import { exportRecipeToFile, importRecipeFromFile } from "./recipeFile";
 import { loadRecipe, saveRecipe } from "./recipeStorage";
 import { ResultsPanel } from "./ResultsPanel";
@@ -79,6 +80,10 @@ export function RecipeEditor() {
       <header className="app-header">
         <h1>La Saponnerie</h1>
         <p>Calculateur de recette de savon par saponification à froid</p>
+        <p className="dataset-version">
+          Jeu de données des corps gras : version {fatsDatasetVersion} (voir docs/SOURCES.md pour la
+          provenance de chaque indice)
+        </p>
 
         <div className="field-group">
           <label htmlFor="recipe-name">Nom de la recette</label>
@@ -170,6 +175,7 @@ export function RecipeEditor() {
           <ResultsPanel
             result={editor.result}
             errors={editor.errors}
+            technicalError={editor.technicalError}
             isComplete={editor.isComplete}
             isCalculating={editor.isCalculating}
             additivesTotalMass={editor.additivesTotalMass}

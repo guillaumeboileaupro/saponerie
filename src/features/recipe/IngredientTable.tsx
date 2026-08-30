@@ -1,4 +1,4 @@
-import { isUnverified, useFatsCatalog } from "./fatsCatalog";
+import { describeProvenance, isUnverified, useFatsCatalog } from "./fatsCatalog";
 import { formatDecimal } from "./formatDecimal";
 import { computeBeeswaxMass, isBeeswaxRow, type EditorIngredient } from "./state";
 import type { IngredientShare } from "../../core/types";
@@ -49,13 +49,9 @@ export function IngredientTable({
 
           return (
             <tr key={row.key}>
-              <th scope="row">
+              <th scope="row" title={entry ? describeProvenance(entry) : undefined}>
                 {entry?.fat.displayName ?? row.catalogId}
-                {entry && isUnverified(entry.status) && (
-                  <span className="badge badge-warning" title={`Source : ${entry.source}`}>
-                    non vérifié
-                  </span>
-                )}
+                {entry && isUnverified(entry.status) && <span className="badge badge-warning">non vérifié</span>}
               </th>
               <td>
                 {beeswax ? (

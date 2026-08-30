@@ -1,5 +1,7 @@
+mod recipe_files;
 mod storage;
 
+use recipe_files::{ecrire_fichier_recette, lire_fichier_recette};
 use saponerie_core::{calculate, CalculationResult, RecipeInput, ValidationError};
 use storage::{Database, RecipeRecord, RecipeSummary};
 use tauri::Manager;
@@ -51,7 +53,6 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
-        .plugin(tauri_plugin_fs::init())
         .setup(|app| {
             let app_data_dir = app.path().app_data_dir()?;
             std::fs::create_dir_all(&app_data_dir)?;
@@ -67,6 +68,8 @@ pub fn run() {
             charger_recette,
             dupliquer_recette,
             supprimer_recette,
+            lire_fichier_recette,
+            ecrire_fichier_recette,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

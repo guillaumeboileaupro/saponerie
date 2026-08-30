@@ -28,9 +28,12 @@ Le jeu de données SAP est livré en **JSON versionné** sous `data/fats.<versio
   "sourceVersion": "2026-08-30",
   "status": "documentary",
   "verifiedAt": null,
+  "crossCheckNote": "SoapCalc, Alfa Chemistry, The Soap Kitchen UK",
   "isUserDefined": false
 }
 ```
+
+`crossCheckNote` (optionnel) consigne les sources externes ayant corroboré ou contredit la valeur lors d'une vérification croisée (voir `docs/SOURCES.md`), affichée systématiquement dans l'éditeur (infobulle sur chaque ingrédient) et incluse dans les exports JSON — la revue de sécurité/qualité du 2026-08-30 a explicitement demandé que la provenance ne reste jamais cachée derrière un simple badge « non vérifié ».
 
 - `sapNaOH`/`sapKOH` sont stockés en chaîne de caractères décimale (pas de flottant binaire), parsés en `Decimal` au chargement.
 - `status` reprend les valeurs de `docs/SOURCES.md` (`documentary`, `cross_checked`, `verified`, `user_defined`).

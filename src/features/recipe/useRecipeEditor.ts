@@ -26,6 +26,7 @@ export interface RecipeEditorApi {
   state: RecipeEditorState;
   result: CalculationResult | null;
   errors: ValidationError[];
+  technicalError: string | null;
   isComplete: boolean;
   isCalculating: boolean;
   additivesTotalMass: string;
@@ -49,6 +50,7 @@ export function useRecipeEditor(): RecipeEditorApi {
   const [state, setState] = useState<RecipeEditorState>(initialRecipeEditorState);
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [errors, setErrors] = useState<ValidationError[]>([]);
+  const [technicalError, setTechnicalError] = useState<string | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
   const recipeInput = useMemo(() => buildRecipeInput(state), [state]);
@@ -59,6 +61,7 @@ export function useRecipeEditor(): RecipeEditorApi {
     if (!recipeInput) {
       setResult(null);
       setErrors([]);
+      setTechnicalError(null);
       return;
     }
 
@@ -71,9 +74,15 @@ export function useRecipeEditor(): RecipeEditorApi {
         if (outcome.ok) {
           setResult(outcome.result);
           setErrors([]);
-        } else {
+          setTechnicalError(null);
+        } else if (outcome.kind === "validation") {
           setResult(null);
           setErrors(outcome.errors);
+          setTechnicalError(null);
+        } else {
+          setResult(null);
+          setErrors([]);
+          setTechnicalError(outcome.message);
         }
         setIsCalculating(false);
       });
@@ -93,6 +102,7 @@ export function useRecipeEditor(): RecipeEditorApi {
     state,
     result,
     errors,
+    technicalError,
     isComplete,
     isCalculating,
     additivesTotalMass,

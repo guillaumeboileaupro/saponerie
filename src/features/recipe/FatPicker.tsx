@@ -1,6 +1,12 @@
 import { useId, useState } from "react";
 import { CustomFatForm } from "./CustomFatForm";
-import { filterFatsCatalog, isUnverified, useFatsCatalog, type FatCatalogEntry } from "./fatsCatalog";
+import {
+  describeProvenance,
+  filterFatsCatalog,
+  isUnverified,
+  useFatsCatalog,
+  type FatCatalogEntry,
+} from "./fatsCatalog";
 
 interface FatPickerProps {
   onSelect: (catalogId: string) => void;
@@ -43,13 +49,10 @@ export function FatPicker({ onSelect }: FatPickerProps) {
                 onSelect(entry.fat.id);
                 setQuery("");
               }}
+              title={describeProvenance(entry)}
             >
               <span>{entry.fat.displayName}</span>
-              {isUnverified(entry.status) && (
-                <span className="badge badge-warning" title={`Source : ${entry.source}`}>
-                  non vérifié
-                </span>
-              )}
+              {isUnverified(entry.status) && <span className="badge badge-warning">non vérifié</span>}
             </button>
           </li>
         ))}

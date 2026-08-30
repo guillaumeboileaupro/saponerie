@@ -57,3 +57,32 @@ export type ValidationError =
   | { type: "concentrationOutOfRange"; details: string }
   | { type: "waterLyeRatioOutOfRange"; details: string }
   | { type: "percentOfOilsOutOfRange"; details: string };
+
+const VALIDATION_ERROR_TYPES: ReadonlySet<ValidationError["type"]> = new Set([
+  "emptyRecipe",
+  "nonPositiveMass",
+  "missingOrNonPositiveSapNaOh",
+  "superfatOutOfRange",
+  "lyePurityOutOfRange",
+  "concentrationOutOfRange",
+  "waterLyeRatioOutOfRange",
+  "percentOfOilsOutOfRange",
+]);
+
+function isValidationError(value: unknown): value is ValidationError {
+  if (typeof value !== "object" || value === null || !("type" in value)) {
+    return false;
+  }
+  return VALIDATION_ERROR_TYPES.has((value as { type: ValidationError["type"] }).type);
+}
+
+/**
+ * Distingue une vraie erreur métier du moteur (Rust a répondu avec un
+ * `Err(Vec<ValidationError>)`, une réponse normale et attendue) d'une
+ * erreur technique IPC (arguments malformés, panique, plugin absent...).
+ * Sans ce garde, toute erreur technique était auparavant affichée comme si
+ * elle décrivait un champ de recette invalide.
+ */
+export function isValidationErrorArray(value: unknown): value is ValidationError[] {
+  return Array.isArray(value) && value.every(isValidationError);
+}
