@@ -22,7 +22,7 @@
 
 ## P2 — Application
 
-- [x] Initialiser Tauri — squelette Tauri 2 + React + TS créé, commande `calculer_recette` reliée à `core/`, build et lancement vérifiés (`npm run build`, `cargo tauri dev` sous Xvfb). Icônes par défaut de Tauri encore en place : à remplacer par `assets/logo/la-saponnerie-minimal.svg` avant packaging (voir `assets/logo/README.md`). Écran actuel (`src/App.tsx`) est une démo technique, pas l'éditeur de recette.
+- [x] Initialiser Tauri — squelette Tauri 2 + React + TS créé, commande `calculer_recette` reliée à `core/`, build et lancement vérifiés (`npm run build`, `cargo tauri dev` sous Xvfb). Icônes par défaut de Tauri encore en place : à remplacer par des tailles générées depuis `assets/logo/logo.svg` avant packaging. Écran actuel (`src/App.tsx`) est une démo technique, pas l'éditeur de recette.
 - [ ] Créer l’éditeur de recette.
 - [ ] Créer le sélecteur d’ingrédients.
 - [ ] Afficher résultats et hypothèses.
