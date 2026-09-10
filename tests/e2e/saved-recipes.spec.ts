@@ -10,6 +10,7 @@ test.beforeEach(async ({ page }) => {
 
 test("enregistrer une recette puis la rouvrir restitue son contenu", async ({ page }) => {
   await page.locator("#recipe-name").fill("Savon de test");
+  await page.locator("#recipe-comments").fill("Démoulage prévu demain matin.");
   await addIngredient(page, "Olive", "320");
 
   await page.getByRole("button", { name: "Enregistrer" }).click();
@@ -19,12 +20,14 @@ test("enregistrer une recette puis la rouvrir restitue son contenu", async ({ pa
   // Modifier la recette en cours pour prouver que "Ouvrir" restitue
   // vraiment les données enregistrées plutôt que de laisser l'état inchangé.
   await page.getByRole("button", { name: /Retirer Olive/ }).click();
+  await page.locator("#recipe-comments").fill("Commentaire modifié");
   await expect(page.getByText("Complétez la recette")).toBeVisible();
 
   await page.getByRole("button", { name: "Ouvrir" }).click();
 
   await expect(page.getByText(/chargée\.$/)).toBeVisible();
   await expect(page.locator("tr", { hasText: "Olive" }).locator("input.mass-input")).toHaveValue("320");
+  await expect(page.locator("#recipe-comments")).toHaveValue("Démoulage prévu demain matin.");
 });
 
 test("dupliquer une recette enregistrée crée une copie indépendante", async ({ page }) => {

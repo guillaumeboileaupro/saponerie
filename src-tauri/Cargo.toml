@@ -1,6 +1,6 @@
 [package]
 name = "la-saponnerie"
-version = "0.1.1"
+version = "0.1.2"
 description = "La Saponnerie — calculateur de recettes de savon hors ligne"
 authors = ["Guillaume Boileau"]
 edition = "2021"
@@ -27,4 +27,3 @@ serde_json = "1"
 saponerie-core = { path = "../core" }
 rusqlite = { version = "0.31", features = ["bundled"] }
 uuid = { version = "1", features = ["v4"] }
-

@@ -33,6 +33,7 @@ test("un fichier bien formé en JSON mais de forme inattendue est rejeté", asyn
 
 test("exporter puis réimporter restitue fidèlement la recette", async ({ page }) => {
   await addIngredient(page, "Olive", "320");
+  await page.locator("#recipe-comments").fill("Essai avec un moule différent.");
 
   await openFiles(page);
   await page.getByRole("button", { name: "Exporter JSON" }).click();
@@ -43,6 +44,7 @@ test("exporter puis réimporter restitue fidèlement la recette", async ({ page 
   // l'import restitue bien les données plutôt que de les laisser par
   // hasard inchangées depuis l'état précédent.
   await page.getByRole("button", { name: /Retirer Olive/ }).click();
+  await page.locator("#recipe-comments").fill("");
   await expect(page.getByText("Complétez la recette")).toBeVisible();
 
   await setNextOpenPath(page, "/mock/export.json");
@@ -51,4 +53,5 @@ test("exporter puis réimporter restitue fidèlement la recette", async ({ page 
 
   await expect(page.getByText("Recette importée.")).toBeVisible();
   await expect(page.locator("tr", { hasText: "Olive" }).locator("input.mass-input")).toHaveValue("320");
+  await expect(page.locator("#recipe-comments")).toHaveValue("Essai avec un moule différent.");
 });

@@ -20,6 +20,7 @@ export function RecipeEditor() {
   const editor = useRecipeEditor();
   const [fileMessage, setFileMessage] = useState<string | null>(null);
   const [recipeName, setRecipeName] = useState(DEFAULT_RECIPE_NAME);
+  const [comments, setComments] = useState("");
   const [currentRecipeId, setCurrentRecipeId] = useState<string | null>(null);
   const [savedRecipesRefreshKey, setSavedRecipesRefreshKey] = useState(0);
   const beeswaxRow = editor.state.ingredients.find(isBeeswaxRow);
@@ -29,7 +30,7 @@ export function RecipeEditor() {
     : null;
 
   async function handleExport() {
-    const outcome = await exportRecipeToFile(editor.state);
+    const outcome = await exportRecipeToFile(editor.state, comments);
     setFileMessage(outcome.ok ? "Recette exportée." : outcome.message);
   }
 
@@ -46,6 +47,7 @@ export function RecipeEditor() {
       });
       setCurrentRecipeId(null);
       setRecipeName(DEFAULT_RECIPE_NAME);
+      setComments(outcome.recipe.comments);
       setFileMessage("Recette importée.");
     } else {
       setFileMessage(outcome.message);
@@ -54,7 +56,12 @@ export function RecipeEditor() {
 
   async function handleSave() {
     try {
-      const id = await saveRecipe(editor.state, recipeName.trim() || DEFAULT_RECIPE_NAME, currentRecipeId);
+      const id = await saveRecipe(
+        editor.state,
+        recipeName.trim() || DEFAULT_RECIPE_NAME,
+        comments,
+        currentRecipeId,
+      );
       setCurrentRecipeId(id);
       setSavedRecipesRefreshKey((key) => key + 1);
       setFileMessage("Recette enregistrée.");
@@ -79,6 +86,7 @@ export function RecipeEditor() {
     });
     setCurrentRecipeId(recipe.id);
     setRecipeName(recipe.name);
+    setComments(recipe.comments);
     setFileMessage(`Recette « ${recipe.name} » chargée.`);
   }
 
@@ -185,6 +193,21 @@ export function RecipeEditor() {
             additivesTotalMass={editor.additivesTotalMass}
             beeswaxMass={beeswaxMass}
           />
+          <div className="recipe-comments field-group">
+            <div className="recipe-comments-heading">
+              <label htmlFor="recipe-comments">Commentaires</label>
+              <span>Facultatif</span>
+            </div>
+            <textarea
+              id="recipe-comments"
+              value={comments}
+              maxLength={5000}
+              rows={6}
+              placeholder="Notes de préparation, observations, idées pour le prochain essai…"
+              onChange={(event) => setComments(event.currentTarget.value)}
+            />
+            <p className="field-hint">Ces notes sont enregistrées avec la recette.</p>
+          </div>
         </section>
       </div>
 

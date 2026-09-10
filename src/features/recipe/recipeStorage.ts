@@ -22,6 +22,7 @@ interface RecipeAdditiveRecord {
 interface RecipeRecord {
   id: string | null;
   name: string;
+  comments: string;
   superfatPercent: string;
   lyePurityPercent: string;
   waterModeKind: string;
@@ -40,6 +41,7 @@ export interface RecipeSummary {
 export interface LoadedRecipe {
   id: string;
   name: string;
+  comments: string;
   ingredients: RecipeEditorState["ingredients"];
   additives: EditorAdditive[];
   superfatPercent: string;
@@ -51,12 +53,14 @@ export interface LoadedRecipe {
 function buildRecipeRecord(
   state: RecipeEditorState,
   name: string,
+  comments: string,
   existingId: string | null,
 ): RecipeRecord {
   const catalog = getFatsCatalog();
   return {
     id: existingId,
     name,
+    comments,
     superfatPercent: state.superfatPercent,
     lyePurityPercent: state.lyePurityPercent,
     waterModeKind: state.waterModeKind,
@@ -85,10 +89,11 @@ function buildRecipeRecord(
 export async function saveRecipe(
   state: RecipeEditorState,
   name: string,
+  comments: string,
   existingId: string | null,
 ): Promise<string> {
   return invoke<string>("sauvegarder_recette", {
-    recette: buildRecipeRecord(state, name, existingId),
+    recette: buildRecipeRecord(state, name, comments, existingId),
   });
 }
 
@@ -113,6 +118,7 @@ export async function loadRecipe(id: string): Promise<LoadedRecipe | null> {
   return {
     id: record.id,
     name: record.name,
+    comments: record.comments,
     ingredients,
     additives,
     superfatPercent: record.superfatPercent,

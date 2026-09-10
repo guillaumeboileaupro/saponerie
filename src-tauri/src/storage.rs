@@ -18,9 +18,10 @@ pub struct Database(pub Mutex<Connection>);
 /// `schema_migrations`). Ajouter une nouvelle entrée à la fin pour toute
 /// évolution de schéma future ; ne jamais modifier une entrée existante une
 /// fois publiée.
-const MIGRATIONS: &[(&str, &str)] = &[(
-    "0001_init",
-    "
+const MIGRATIONS: &[(&str, &str)] = &[
+    (
+        "0001_init",
+        "
     CREATE TABLE IF NOT EXISTS recipes (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -54,7 +55,12 @@ const MIGRATIONS: &[(&str, &str)] = &[(
         mass_grams TEXT NOT NULL
     );
     ",
-)];
+    ),
+    (
+        "0002_recipe_comments",
+        "ALTER TABLE recipes ADD COLUMN comments TEXT NOT NULL DEFAULT '';",
+    ),
+];
 
 fn now_millis() -> i64 {
     SystemTime::now()
@@ -121,6 +127,8 @@ pub struct RecipeAdditiveRecord {
 pub struct RecipeRecord {
     pub id: Option<String>,
     pub name: String,
+    #[serde(default)]
+    pub comments: String,
     pub superfat_percent: String,
     pub lye_purity_percent: String,
     pub water_mode_kind: String,
@@ -145,11 +153,12 @@ pub fn save_recipe(conn: &mut Connection, record: &RecipeRecord) -> rusqlite::Re
     let id = match &record.id {
         Some(existing_id) => {
             tx.execute(
-                "UPDATE recipes SET name = ?1, superfat_percent = ?2, lye_purity_percent = ?3,
-                 water_mode_kind = ?4, water_mode_value = ?5, dataset_version = ?6, updated_at = ?7
-                 WHERE id = ?8",
+                "UPDATE recipes SET name = ?1, comments = ?2, superfat_percent = ?3, lye_purity_percent = ?4,
+                 water_mode_kind = ?5, water_mode_value = ?6, dataset_version = ?7, updated_at = ?8
+                 WHERE id = ?9",
                 params![
                     record.name,
+                    record.comments,
                     record.superfat_percent,
                     record.lye_purity_percent,
                     record.water_mode_kind,
@@ -172,12 +181,13 @@ pub fn save_recipe(conn: &mut Connection, record: &RecipeRecord) -> rusqlite::Re
         None => {
             let new_id = uuid::Uuid::new_v4().to_string();
             tx.execute(
-                "INSERT INTO recipes (id, name, superfat_percent, lye_purity_percent,
+                "INSERT INTO recipes (id, name, comments, superfat_percent, lye_purity_percent,
                  water_mode_kind, water_mode_value, dataset_version, created_at, updated_at)
-                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8)",
+                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?9)",
                 params![
                     new_id,
                     record.name,
+                    record.comments,
                     record.superfat_percent,
                     record.lye_purity_percent,
                     record.water_mode_kind,
@@ -241,7 +251,7 @@ pub fn list_recipes(conn: &Connection) -> rusqlite::Result<Vec<RecipeSummary>> {
 
 pub fn load_recipe(conn: &Connection, id: &str) -> rusqlite::Result<Option<RecipeRecord>> {
     let recipe_row = conn.query_row(
-        "SELECT id, name, superfat_percent, lye_purity_percent, water_mode_kind, water_mode_value, dataset_version
+        "SELECT id, name, comments, superfat_percent, lye_purity_percent, water_mode_kind, water_mode_value, dataset_version
          FROM recipes WHERE id = ?1",
         params![id],
         |row| {
@@ -253,6 +263,7 @@ pub fn load_recipe(conn: &Connection, id: &str) -> rusqlite::Result<Option<Recip
                 row.get::<_, String>(4)?,
                 row.get::<_, String>(5)?,
                 row.get::<_, String>(6)?,
+                row.get::<_, String>(7)?,
             ))
         },
     );
@@ -260,6 +271,7 @@ pub fn load_recipe(conn: &Connection, id: &str) -> rusqlite::Result<Option<Recip
     let (
         id,
         name,
+        comments,
         superfat_percent,
         lye_purity_percent,
         water_mode_kind,
@@ -304,6 +316,7 @@ pub fn load_recipe(conn: &Connection, id: &str) -> rusqlite::Result<Option<Recip
     Ok(Some(RecipeRecord {
         id: Some(id),
         name,
+        comments,
         superfat_percent,
         lye_purity_percent,
         water_mode_kind,
@@ -344,6 +357,7 @@ mod tests {
         RecipeRecord {
             id: None,
             name: "Savon de test".to_string(),
+            comments: "À démouler dans 24 heures".to_string(),
             superfat_percent: "5".to_string(),
             lye_purity_percent: "99".to_string(),
             water_mode_kind: "percentOfOils".to_string(),
@@ -399,6 +413,31 @@ mod tests {
     }
 
     #[test]
+    fn migration_ajoute_les_commentaires_aux_bases_existantes() {
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch(MIGRATIONS[0].1).unwrap();
+        conn.execute_batch(
+            "CREATE TABLE schema_migrations (name TEXT PRIMARY KEY, applied_at INTEGER NOT NULL);
+             INSERT INTO schema_migrations (name, applied_at) VALUES ('0001_init', 0);
+             INSERT INTO recipes (id, name, superfat_percent, lye_purity_percent,
+               water_mode_kind, water_mode_value, dataset_version, created_at, updated_at)
+             VALUES ('ancienne', 'Ancienne recette', '5', '100', 'percentOfOils', '35', 'v1', 0, 0);",
+        )
+        .unwrap();
+
+        run_migrations(&conn).unwrap();
+
+        let comments: String = conn
+            .query_row(
+                "SELECT comments FROM recipes WHERE id = 'ancienne'",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap();
+        assert_eq!(comments, "");
+    }
+
+    #[test]
     fn sauvegarde_puis_chargement_conserve_toutes_les_donnees() {
         let mut conn = open_test_db();
         let id = save_recipe(&mut conn, &sample_record()).unwrap();
@@ -407,6 +446,7 @@ mod tests {
             .unwrap()
             .expect("la recette doit exister");
         assert_eq!(loaded.name, "Savon de test");
+        assert_eq!(loaded.comments, "À démouler dans 24 heures");
         assert_eq!(loaded.ingredients.len(), 2);
         assert_eq!(loaded.ingredients[0].fat_id, "olive");
         assert_eq!(loaded.ingredients[0].mass_grams, "320");
@@ -467,6 +507,7 @@ mod tests {
 
         let copy = load_recipe(&conn, &copy_id).unwrap().unwrap();
         assert_eq!(copy.name, "Savon de test (copie)");
+        assert_eq!(copy.comments, "À démouler dans 24 heures");
         assert_eq!(copy.ingredients.len(), 2);
 
         // L'original reste inchangé.

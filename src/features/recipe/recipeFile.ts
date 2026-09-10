@@ -21,6 +21,7 @@ const FORMAT_VERSION = 1;
 // ils évitent seulement qu'un fichier corrompu ou hostile ne produise des
 // chaînes disproportionnées ou des milliers de lignes fantômes dans l'UI.
 const MAX_STRING_LENGTH = 200;
+const MAX_COMMENTS_LENGTH = 5000;
 const MAX_INGREDIENTS = 200;
 const MAX_ADDITIVES = 200;
 const WATER_MODE_KINDS: ReadonlySet<string> = new Set([
@@ -63,6 +64,7 @@ interface ExportedRecipe {
   formatVersion: number;
   exportedAt: string;
   dataSetVersion: string;
+  comments?: string;
   superfatPercent: string;
   lyePurityPercent: string;
   waterMode: { kind: WaterModeKind; value: string };
@@ -79,12 +81,13 @@ interface ExportedRecipe {
  * `user_defined`, jamais présenté comme vérifié (§5 de
  * docs/PROJECT_CONTEXT.md).
  */
-export function buildExportedRecipe(state: RecipeEditorState): ExportedRecipe {
+export function buildExportedRecipe(state: RecipeEditorState, comments = ""): ExportedRecipe {
   const catalog = getFatsCatalog();
   return {
     formatVersion: FORMAT_VERSION,
     exportedAt: new Date().toISOString(),
     dataSetVersion: fatsDatasetVersion,
+    comments,
     superfatPercent: state.superfatPercent,
     lyePurityPercent: state.lyePurityPercent,
     waterMode: { kind: state.waterModeKind, value: state.waterModeValue },
@@ -172,6 +175,10 @@ export function isExportedRecipe(value: unknown): value is ExportedRecipe {
   const candidate = value as Record<string, unknown>;
 
   if (candidate.formatVersion !== FORMAT_VERSION) return false;
+  if (
+    candidate.comments !== undefined &&
+    (typeof candidate.comments !== "string" || candidate.comments.length > MAX_COMMENTS_LENGTH)
+  ) return false;
   if (!isValidDecimalString(candidate.superfatPercent)) return false;
   if (!isValidDecimalString(candidate.lyePurityPercent)) return false;
 
@@ -206,6 +213,7 @@ export function isExportedRecipe(value: unknown): value is ExportedRecipe {
 }
 
 export interface ImportedRecipe {
+  comments: string;
   ingredients: EditorIngredient[];
   additives: EditorAdditive[];
   superfatPercent: string;
@@ -216,6 +224,7 @@ export interface ImportedRecipe {
 
 export async function exportRecipeToFile(
   state: RecipeEditorState,
+  comments = "",
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   try {
     const path = await save({
@@ -228,7 +237,7 @@ export async function exportRecipeToFile(
     }
     await invoke("ecrire_fichier_recette", {
       chemin: path,
-      contenu: JSON.stringify(buildExportedRecipe(state), null, 2),
+      contenu: JSON.stringify(buildExportedRecipe(state, comments), null, 2),
     });
     return { ok: true };
   } catch (error) {
@@ -288,6 +297,7 @@ export async function importRecipeFromFile(): Promise<
   return {
     ok: true,
     recipe: {
+      comments: parsed.comments ?? "",
       ingredients,
       additives,
       superfatPercent: parsed.superfatPercent,

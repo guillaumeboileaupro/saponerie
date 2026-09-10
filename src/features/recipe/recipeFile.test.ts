@@ -33,6 +33,14 @@ describe("isExportedRecipe — validation d'un fichier importé", () => {
     expect(isExportedRecipe(validRecipe())).toBe(true);
   });
 
+  it("accepte un commentaire facultatif et refuse un commentaire démesuré", () => {
+    const recipe = validRecipe() as Record<string, unknown>;
+    recipe.comments = "Texture plus crémeuse que le premier essai.";
+    expect(isExportedRecipe(recipe)).toBe(true);
+    recipe.comments = "x".repeat(5001);
+    expect(isExportedRecipe(recipe)).toBe(false);
+  });
+
   it("rejette une valeur qui n'est pas un objet", () => {
     expect(isExportedRecipe(null)).toBe(false);
     expect(isExportedRecipe("recette.json")).toBe(false);
