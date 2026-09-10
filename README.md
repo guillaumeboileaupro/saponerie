@@ -15,11 +15,11 @@ Application de bureau hors ligne pour composer une recette de savon par saponifi
 
 ## Télécharger
 
-Version publique actuelle : **[La Saponnerie v0.1.1](https://github.com/guillaumeboileaupro/saponerie/releases/tag/v0.1.1)**.
+Version publique actuelle : **[La Saponnerie v0.1.2](https://github.com/guillaumeboileaupro/saponerie/releases/tag/v0.1.2)**.
 
-- [Windows — télécharger l'installateur `.exe`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.1/La.Saponnerie_0.1.1_x64-setup.exe)
-- [Ubuntu/Debian — télécharger le paquet `.deb`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.1/La.Saponnerie_0.1.1_amd64.deb)
-- [Android — télécharger le paquet `.apk`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.1/La.Saponnerie_0.1.1_android.apk)
+- [Windows — télécharger l'installateur `.exe`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.2/La.Saponnerie_0.1.2_x64-setup.exe)
+- [Ubuntu/Debian — télécharger le paquet `.deb`](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.2/La.Saponnerie_0.1.2_amd64.deb)
+- [Android — télécharger le paquet `.apk` v0.1.1](https://github.com/guillaumeboileaupro/saponerie/releases/download/v0.1.1/La.Saponnerie_0.1.1_android.apk) — la v0.1.2 Android n'est pas encore publiée.
 
 L'installateur Windows n'est pas encore signé numériquement. Windows SmartScreen peut afficher un avertissement au premier lancement, et le navigateur (Chrome/Edge) peut aussi bloquer le téléchargement en le signalant comme peu téléchargé (avertissement lié à la nouveauté du fichier, pas à un problème réel) : utiliser « Conserver quand même » dans la barre de téléchargement. Vérifier que le fichier provient bien de la page officielle de la release avant de l'exécuter. Le `.exe` a été construit par la CI sur Windows, mais doit encore être testé manuellement sur une machine Windows.
 
@@ -37,11 +37,12 @@ Fonctionnalités disponibles :
 - ingrédients documentés et ingrédients personnalisés signalés comme non vérifiés ;
 - gestion séparée des additifs ;
 - sauvegarde, duplication et suppression des recettes dans SQLite ;
+- commentaires facultatifs enregistrés avec chaque recette ;
 - import et export JSON ;
 - interface responsive et utilisable au clavier ;
-- génération automatisée d’un paquet Ubuntu/Debian `.deb`, d’un installateur Windows NSIS `.exe` et d’un paquet Android `.apk`.
+- génération automatisée d’un paquet Ubuntu/Debian `.deb` et d’un installateur Windows NSIS `.exe` ; un paquet Android `.apk` v0.1.1 reste disponible séparément.
 
-La version `v0.1.0` est publiée et téléchargeable. Elle reste une première version à évaluer : la provenance SAP doit être complétée, les avertissements de sécurité doivent recevoir une relecture humaine qualifiée, les permissions Tauri et la CSP doivent être durcies, et l'installateur Windows doit être testé manuellement. Le suivi détaillé est dans [TODO.md](TODO.md).
+La version `v0.1.2` est publiée et téléchargeable. Elle reste une version à évaluer : la provenance SAP doit être complétée, les avertissements de sécurité doivent recevoir une relecture humaine qualifiée, les permissions Tauri et la CSP doivent être durcies, et l'installateur Windows doit être testé manuellement. Le suivi détaillé est dans [TODO.md](TODO.md).
 
 ## Architecture
 
